@@ -25,7 +25,7 @@ class InitializingSettingsClasses < Test::Unit::TestCase
   end
   
   verify 'loads up values previously stored in the db' do
-    $sql_executor.execute "insert into predefined_values (name,value) values ('predefined_value','#{ARSettings.serialize(12)}')"
+    $sql_executor.silent_execute "insert into predefined_values (name,value) values ('predefined_value','#{ARSettings.serialize(12)}')"
     ARSettings.create_settings_class :PredefinedValues
     # make sure it loads the value
     assert_equal 1 , PredefinedValues.count
@@ -36,5 +36,3 @@ class InitializingSettingsClasses < Test::Unit::TestCase
   end
     
 end
-
-p $sql_executor
