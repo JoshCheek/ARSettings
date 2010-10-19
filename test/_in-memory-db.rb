@@ -34,6 +34,7 @@ ActiveRecord::Schema.define do
     :settings             ,
     :setting2s            ,
     :setting3s            ,
+    :volatile_tests       ,
   ].each do |tablename|
     create_table tablename , &define_as_settings_class
   end

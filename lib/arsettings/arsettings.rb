@@ -10,7 +10,8 @@ module ARSettings
       extend  SettingsClass_ClassMethods
       include SettingsClass_InstanceMethods
       const_set :AlreadyDefinedError , ARSettings::AlreadyDefinedError
-      const_set :DEFAULT , options[:default]
+      const_set :DEFAULT             , options[:default]
+      const_set :VOLATILIE_DEFAULT   , options.fetch(:volatile,false)
     end
     Object.const_set classname , theclass
     theclass.load_from_db
