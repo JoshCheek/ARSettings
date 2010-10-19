@@ -57,7 +57,7 @@ class SettingTest < Test::Unit::TestCase
     assert_equal 14 , Setting.b
   end
   
-
+  
   verify 'get a list of settings' do
     Setting.add_setting :abc
     Setting.add_setting :def
@@ -90,6 +90,17 @@ class SettingTest < Test::Unit::TestCase
     assert_equal 2  , Setting.abcd
     Setting.abcd = "3"
     assert_equal 3 , Setting.abcd
+  end
+  
+  verify 'readding the setting allows you to update volatility and postprocessing' do
+    Setting.add_setting( :abcd , :default => "12.5" , :volatile => false ) { |val| val.to_f }
+    assert_equal 12.5 , Setting.abcd
+    $sql_executor.silent_execute "update settings set value='#{ARSettings.serialize(5.5)}' where name='abcd'"
+    assert_equal 12.5 , Setting.abcd
+    Setting.add_setting :abcd , :volatile => true
+    assert_equal 5.5 , Setting.abcd
+    Setting.add_setting( :abcd , :volatile => true ) { |val| val.to_i }
+    assert_equal 5 , Setting.abcd
   end
   
 end

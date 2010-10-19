@@ -33,11 +33,15 @@ module ARSettings
     
     def add_setting( name , options={} , &proc )
       name = name.intern
-      return send(name) if setting? name
-      add_setter(name)
-      add_getter(name)
-      @settings[name] = new :name => name.to_s , :postprocessing => proc || PASSTHROUGH , :volatile => !!options.fetch(:volatile,self::VOLATILIE_DEFAULT)
-      send "#{name}=" , options.fetch(:default,default)
+      if setting? name
+        @settings[name].volatile        =  options[:volatile]  if options.has_key? :volatile
+        @settings[name].postprocessing  =  proc                if proc
+      else
+        add_setter(name)
+        add_getter(name)
+        @settings[name] = new :name => name.to_s , :postprocessing => proc || PASSTHROUGH , :volatile => !!options.fetch(:volatile,self::VOLATILIE_DEFAULT)
+        send "#{name}=" , options.fetch(:default,default)
+      end
     end
     
     def default
