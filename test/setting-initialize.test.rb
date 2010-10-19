@@ -56,4 +56,8 @@ class InitializingSettingsClasses < Test::Unit::TestCase
     assert_equal ThisShouldBeReturned , result
   end
   
+  verify 'cannot reload from db' do
+    assert_raises(RuntimeError) { Setting.load_from_db }
+  end
+  
 end
