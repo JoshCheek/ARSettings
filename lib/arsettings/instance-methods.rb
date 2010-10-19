@@ -18,21 +18,9 @@ module ARSettings
       end
     end
     
-    def postprocessing=(proc)
-      @deserialized_postprocessing = proc
-      @postprocessing_is_deserialized = true
-      super ARSettings.serialize(proc)
-      save
-    end
-    
-    def postprocessing
-      if @postprocessing_is_deserialized
-        @deserialized_postprocessing
-      else
-        @postprocessing_is_deserialized = true
-        @deserialized_postprocessing = ARSettings.deserialize(super)
-      end
-    end
+    # unfortunately, can't serialize a proc. I tried both yaml and marshal
+    # so will have to keep it in memory and just be sure to set it each time app loads
+    attr_accessor :postprocessing
     
   end
   

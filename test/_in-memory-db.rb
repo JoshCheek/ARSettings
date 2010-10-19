@@ -16,12 +16,12 @@ ActiveRecord::Base.establish_connection :adapter => 'sqlite3' , :database => ":m
 
 # silently create the db
 require 'stringio'
+old_stdout = $stdout
 $stdout = StringIO.new
 
 define_as_settings_class = lambda do |t|
-  t.string  :name            ,  :null => false , :size => 30
-  t.text    :value
-  t.text    :postprocessing
+  t.string  :name   , :null => false , :size => 30
+  t.text    :value  , :null => false
   t.timestamps
 end
 
@@ -37,6 +37,11 @@ ActiveRecord::Schema.define do
     create_table tablename , &define_as_settings_class
   end
   
-  execute "insert into predefined_values (name,value,postprocessing) values ('predefined_value','#{ARSettings.serialize(12)}','#{ARSettings.serialize(lambda{|i|i.to_i})}')"
+  # capture this object so that I can write sql later (prob a better way, but IDK what it is)
+  $sql_executor = self
+  def $sql_executor.silent_execute(sql)
+    suppress_messages { execute(sql) }
+  end
+
 end
-$stdout = STDOUT
+$stdout = old_stdout

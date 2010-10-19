@@ -24,8 +24,8 @@ class InitializingSettingsClasses < Test::Unit::TestCase
     assert_equal 123 , Setting3.default
   end
   
-  # this value is created in _in-memory-db.rb since I can't figure out how to execute sql outside of there
   verify 'loads up values previously stored in the db' do
+    $sql_executor.execute "insert into predefined_values (name,value) values ('predefined_value','#{ARSettings.serialize(12)}')"
     ARSettings.create_settings_class :PredefinedValues
     # make sure it loads the value
     assert_equal 1 , PredefinedValues.count
@@ -33,9 +33,8 @@ class InitializingSettingsClasses < Test::Unit::TestCase
     assert_equal 12 , PredefinedValues.predefined_value
     # make sure it recognizes exclusiveness of the setting
     assert_raises(ARSettings::AlreadyDefinedError) { PredefinedValues.add_setting :predefined_value }
-    # make sure it loads the postprocessing
-    PredefinedValues.predefined_value = "7"
-    assert_equal 7 , PredefinedValues.predefined_value 
   end
     
 end
+
+p $sql_executor
