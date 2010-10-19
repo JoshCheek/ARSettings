@@ -15,6 +15,7 @@ module ARSettings
     end
     Object.const_set classname , theclass
     theclass.load_from_db
+    theclass
   end
   
   def self.serialize(data)

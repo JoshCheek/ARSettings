@@ -49,6 +49,11 @@ class InitializingSettingsClasses < Test::Unit::TestCase
     assert_equal 1   , VolatileTest.abcd
     assert_equal 20  , VolatileTest.efgh
     assert_equal 200 , VolatileTest.ijkl
-  end 
+  end
+  
+  verify 'create_settings_class should return the class' do
+    result = ARSettings.create_settings_class :ThisShouldBeReturned
+    assert_equal ThisShouldBeReturned , result
+  end
   
 end

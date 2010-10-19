@@ -29,12 +29,13 @@ end
 ActiveRecord::Schema.define do
   
   [ 
-    :different_names      , 
-    :predefined_values    ,
-    :settings             ,
-    :setting2s            ,
-    :setting3s            ,
-    :volatile_tests       ,
+    :different_names           , 
+    :predefined_values         ,
+    :settings                  ,
+    :setting2s                 ,
+    :setting3s                 ,
+    :volatile_tests            ,
+    :this_should_be_returneds  ,
   ].each do |tablename|
     create_table tablename , &define_as_settings_class
   end
