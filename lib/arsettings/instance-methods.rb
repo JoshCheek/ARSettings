@@ -10,9 +10,10 @@ module ARSettings
     end
     
     def value
-      if @value_is_deserialized
+      if @value_is_deserialized && !volatile
         @deserialized_value
       else
+        reload
         @value_is_deserialized = true
         @deserialized_value = ARSettings.deserialize(super)
       end

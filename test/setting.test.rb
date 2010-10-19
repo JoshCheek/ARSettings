@@ -57,7 +57,6 @@ class SettingTest < Test::Unit::TestCase
   end
 
   verify 'get a list of settings' do
-    Setting.reset
     Setting.add_setting :abc
     Setting.add_setting :def
     Setting.add_setting :ghi
@@ -65,11 +64,30 @@ class SettingTest < Test::Unit::TestCase
   end
   
   verify 'get a list of settings and values' do
-    Setting.reset
     Setting.add_setting :abc , :default => 1
     Setting.add_setting :def , :default => 2
     Setting.add_setting :ghi , :default => 3
     assert_equal [[:abc,1],[:def,2],[:ghi,3]] , Setting.settings_with_values.sort_by { |name,value| name }
+  end
+  
+  verify 'can specify that object should reload from db each time' do
+    Setting.add_setting :abcd , :default => 1
+    Setting.add_setting :efgh , :default => 10 , :volatile => true
+    assert_equal 1  , Setting.abcd
+    assert_equal 10 , Setting.efgh
+    $sql_executor.silent_execute "update settings set value='#{ARSettings.serialize(2)}' where name='abcd'"
+    $sql_executor.silent_execute "update settings set value='#{ARSettings.serialize(20)}' where name='efgh'"
+    assert_equal 1  , Setting.abcd
+    assert_equal 20 , Setting.efgh
+  end
+  
+  verify 'retains postprocessing after a reload' do
+    Setting.add_setting( :abcd , :default => 1 , :volatile => true ) { |val| val.to_i }
+    assert_equal 1 , Setting.abcd
+    $sql_executor.silent_execute "update settings set value='#{ARSettings.serialize(2)}' where name='abcd'"
+    assert_equal 2  , Setting.abcd
+    Setting.abcd = "3"
+    assert_equal 3 , Setting.abcd
   end
   
 end

@@ -20,8 +20,9 @@ old_stdout = $stdout
 $stdout = StringIO.new
 
 define_as_settings_class = lambda do |t|
-  t.string  :name   , :null => false , :size => 30
-  t.text    :value  , :null => false
+  t.string  :name     , :null => false , :size => 30
+  t.text    :value    , :null => false
+  t.boolean :volatile , :null => false , :default => false
   t.timestamps
 end
 
