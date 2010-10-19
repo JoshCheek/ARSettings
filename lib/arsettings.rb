@@ -5,6 +5,7 @@ manifest = %w(
   settings-class-methods
   settings-instance-methods
   activerecord
+  activerecord-class-methods
 )
 
 manifest.each do |filename|
