@@ -1,6 +1,5 @@
 require File.dirname(__FILE__) + '/_helper'
 
-# run the unit tests
 class CanChooseNameOfSettingClass < Test::Unit::TestCase
   
   verify 'can choose name of the class to store settings in' do

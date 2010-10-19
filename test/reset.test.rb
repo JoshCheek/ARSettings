@@ -1,6 +1,5 @@
 require File.dirname(__FILE__) + '/_helper'
 
-# run the unit tests
 class ResetTest < Test::Unit::TestCase
   
   def setup
