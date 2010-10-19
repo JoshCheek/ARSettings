@@ -1,7 +1,11 @@
-%w(
+require 'yaml'
+
+manifest = %w(
   arsettings
   class-methods
   instance-methods
-).each do |filename|
+)
+
+manifest.each do |filename|
   require File.dirname(__FILE__) << "/arsettings/#{filename}"
 end
