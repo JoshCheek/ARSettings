@@ -103,6 +103,11 @@ class SettingTest < Test::Unit::TestCase
     assert_equal 5 , Setting.abcd
   end
   
+  verify 'defaults get run through the postprocessor' do
+    Setting.add_setting( :abcd , :default => "5" ) { |i| i.to_i }
+    assert_equal 5 , Setting.abcd
+  end
+  
 end
 
 

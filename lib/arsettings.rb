@@ -2,8 +2,9 @@ require 'yaml'
 
 manifest = %w(
   arsettings
-  class-methods
-  instance-methods
+  settings-class-methods
+  settings-instance-methods
+  activerecord
 )
 
 manifest.each do |filename|
