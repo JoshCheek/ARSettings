@@ -19,6 +19,7 @@ module ARSettings
     end
     
     def add_setting( name , options={} , &proc )
+      name = name.intern
       raise AlreadyDefinedError.new("#{name} has already been added as a setting") if setting? name
       add_setter(name)
       add_getter(name)

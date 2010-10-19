@@ -50,7 +50,7 @@ class DeclarationsTest < Test::Unit::TestCase
     assert_nothing_raised { Setting.add_setting :a }
     assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting 'a' }
     assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting :a }
-    reset
+    Setting.reset
     assert_nothing_raised { Setting.add_setting 'a' }
     assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting 'a' }
     assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting :a }
