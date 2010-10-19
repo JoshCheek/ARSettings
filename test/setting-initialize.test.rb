@@ -2,9 +2,10 @@ require File.dirname(__FILE__) + '/_helper'
 
 class CanChooseNameOfSettingClass < Test::Unit::TestCase
   
+  # can't lazy load so that error only shows up if you try to use it
+  # because we need to read the table immediately to load propagated settings
   verify 'raises error if db does not support the class' do
-    assert_nothing_raised { ARSettings.create_settings_class 'NotInTheDatabase' }
-    assert_raises(ActiveRecord::StatementInvalid) { NotInTheDatabase.add_setting :abc }
+    assert_raises(ActiveRecord::StatementInvalid) { ARSettings.create_settings_class 'NotInTheDatabase' }
   end
   
   verify 'raises error if the constant already exists' do
@@ -17,6 +18,24 @@ class CanChooseNameOfSettingClass < Test::Unit::TestCase
     assert_equal 123 , Setting3.default
     Setting3.reset
     assert_equal 123 , Setting3.default
-  end  
+    Setting3.default = 456
+    assert_equal 456 , Setting3.default
+    Setting3.reset
+    assert_equal 123 , Setting3.default
+  end
+  
+  # this value is created in _in-memory-db.rb since I can't figure out how to execute sql outside of there
+  verify 'loads up values previously stored in the db' do
+    ARSettings.create_settings_class :PredefinedValues
+    # make sure it loads the value
+    assert_equal 1 , PredefinedValues.count
+    assert PredefinedValues.setting?(:predefined_value)
+    assert_equal 12 , PredefinedValues.predefined_value
+    # make sure it recognizes exclusiveness of the setting
+    assert_raises(ARSettings::AlreadyDefinedError) { PredefinedValues.add_setting :predefined_value }
+    # make sure it loads the postprocessing
+    PredefinedValues.predefined_value = "7"
+    assert_equal 7 , PredefinedValues.predefined_value 
+  end
     
 end

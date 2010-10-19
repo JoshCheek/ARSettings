@@ -5,13 +5,26 @@ module ARSettings
     PASSTHROUGH = lambda { |val| val }
     
     def reset
-      (@settings||{}).each do |name,attributes| 
+      (@settings||{}).each do |name,instance| 
         remove_setter(name)
         remove_getter(name)
-        attributes[:instance].destroy
+        instance.destroy
       end
       @settings = Hash.new
       @default = self::DEFAULT
+    end
+    
+    def load_from_db
+      raise "this should only be called when initializing" if defined?(@settings)
+      reset
+      new_settings = Hash.new
+      all.each do |instance|
+        name = instance.name.intern
+        new_settings[name] = instance
+        add_setter name
+        add_getter name
+      end
+      @settings = new_settings
     end
     
     def setting?(name)
@@ -23,7 +36,7 @@ module ARSettings
       raise self::AlreadyDefinedError.new("#{name} has already been added as a setting") if setting? name
       add_setter(name)
       add_getter(name)
-      @settings[name] = { :postprocessing => proc || PASSTHROUGH , :instance => new(:name => name.to_s) }
+      @settings[name] = new :name => name.to_s , :postprocessing => proc || PASSTHROUGH
       send "#{name}=" , options.fetch(:default,default)
     end
     
@@ -51,12 +64,12 @@ module ARSettings
     
     def add_setter(name)
       define_method "#{name}=" do |value|
-        @settings[name][:instance].value = @settings[name][:postprocessing][value]
+        @settings[name].value = @settings[name].postprocessing.call(value)
       end
     end
     
     def add_getter(name)
-      define_method(name) { @settings[name][:instance].value }
+      define_method(name) { @settings[name].value }
     end
     
     def remove_setter(name)

@@ -11,9 +11,9 @@ module ARSettings
       include SettingsClass_InstanceMethods
       const_set :AlreadyDefinedError , ARSettings::AlreadyDefinedError
       const_set :DEFAULT , options[:default]
-      reset
     end
-    Object.const_set classname , theclass    
+    Object.const_set classname , theclass
+    theclass.load_from_db
   end
   
   def self.serialize(data)
