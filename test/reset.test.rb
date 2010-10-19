@@ -10,14 +10,18 @@ class ResetTest < Test::Unit::TestCase
   
   verify 'resets respond_to?' do
     assert Setting.respond_to?(:abc)
+    assert Setting.respond_to?(:abc=)
     Setting.reset
     assert !Setting.respond_to?(:abc)
+    assert !Setting.respond_to?(:abc=)
   end
   
   verify 'resets method' do
-    assert Setting.abc
+    assert_nothing_raised { Setting.abc     }
+    assert_nothing_raised { Setting.abc = 1 }
     Setting.reset
-    assert_raises(NoMethodError) { Setting.abc }
+    assert_raises(NoMethodError) { Setting.abc     }
+    assert_raises(NoMethodError) { Setting.abc = 2 }
   end
   
   verify 'resets setting?' do

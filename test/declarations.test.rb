@@ -5,6 +5,7 @@ class DeclarationsTest < Test::Unit::TestCase
       
   def setup
     Setting.reset
+    Setting.default = :the_default_value
   end
   
   verify 'can query whether a setting exists with setting?, and can declare settings with add_setting' do
@@ -14,9 +15,22 @@ class DeclarationsTest < Test::Unit::TestCase
   end
   
   verify 'defaults to Setting.default if no default is given' do
-    Setting.default = :xyz
     Setting.add_setting :a
-    assert_equal Setting.default , Setting.a
+    assert_equal :the_default_value , Setting.a
   end
-    
+  
+  verify 'can add default when creating' do
+    Setting.add_setting :a , 123
+    assert_equal 123 , Setting.a
+  end
+  
+  verify 'can pass proc to handle postprocessing' do
+    Setting.add_setting :a , '123' do |setting|
+      setting.to_i
+    end
+    assert_equal 123 , Setting.a
+    Setting.a = '456'
+    assert_equal 456 , Setting.a
+  end
+  
 end

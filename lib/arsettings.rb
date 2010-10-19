@@ -15,9 +15,12 @@ module ARSettings
   
   module SettingsClass_ClassMethods
     
+    PASSTHROUGH = lambda { |val| val }
+    
     def reset
-      (@settings||{}).each do |meth,value|
-        (class << self; self; end).send :remove_method  , meth
+      (@settings||{}).each do |setting,attributes|
+        (class << self; self; end).send :remove_method  , setting
+        (class << self; self; end).send :remove_method  , "#{setting}="
       end
       @settings = Hash.new
       @default = nil
@@ -27,11 +30,16 @@ module ARSettings
       @settings.has_key? setting
     end
     
-    def add_setting(setting)
+    def add_setting( setting , the_default=self.default , &proc )
       (class << self; self; end).send :define_method , setting do
-        @settings[setting]
+        @settings[setting][:value]
       end
-      @settings[setting] = default
+      (class << self; self; end).send :define_method , "#{setting}=" do |value|
+        @settings[setting][:value] = @settings[setting][:postprocessing][value]
+      end
+      @settings[setting] = Hash.new
+      @settings[setting][:postprocessing] = proc || PASSTHROUGH
+      send "#{setting}=" , the_default
     end
     
     def default
@@ -41,6 +49,7 @@ module ARSettings
     def default=(new_default)
       @default = new_default
     end
+    
   end
   
 end
