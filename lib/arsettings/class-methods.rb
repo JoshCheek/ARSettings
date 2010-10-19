@@ -11,7 +11,7 @@ module ARSettings
         attributes[:instance].destroy
       end
       @settings = Hash.new
-      @default = nil # DEFAULT
+      @default = self::DEFAULT
     end
     
     def setting?(name)
@@ -20,7 +20,7 @@ module ARSettings
     
     def add_setting( name , options={} , &proc )
       name = name.intern
-      raise AlreadyDefinedError.new("#{name} has already been added as a setting") if setting? name
+      raise self::AlreadyDefinedError.new("#{name} has already been added as a setting") if setting? name
       add_setter(name)
       add_getter(name)
       @settings[name] = { :postprocessing => proc || PASSTHROUGH , :instance => new(:name => name) }
