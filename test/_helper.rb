@@ -47,5 +47,9 @@ class Test::Unit::TestCase
   def assert_invalid_name(&block)
     assert_raises Setting::InvalidName , &block
   end
+  
+  def assert_count(count)
+    assert_equal count , Setting.count
+  end
     
 end

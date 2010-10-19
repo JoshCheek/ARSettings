@@ -6,11 +6,7 @@ class TestSettingQuery < Test::Unit::TestCase
   def setup
     Setting.delete_all
   end
-  
-  def assert_count(count)
-    assert_equal count , Setting.count
-  end
-      
+        
   verify "creates a setting when it doesn't exist" do
     assert_count 0
     Setting[:abc]
