@@ -41,20 +41,22 @@ class SettingTest < Test::Unit::TestCase
     assert_equal( /abc/ , setting.value )
   end
   
-  verify 'raises error if the setting already exists' do
+  verify 'does not raise error if the setting already exists' do
     assert_nothing_raised { Setting.add_setting :a }
-    assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting :a }
+    assert_nothing_raised { Setting.add_setting :a }
   end
   
-  verify 'uses indifferent access' do
-    assert_nothing_raised { Setting.add_setting :a }
-    assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting 'a' }
-    assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting :a }
-    Setting.reset
-    assert_nothing_raised { Setting.add_setting 'a' }
-    assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting 'a' }
-    assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting :a }
+  verify 'does not overwrite current value with default when added repeatedly' do
+    Setting.add_setting :a , :default => 12
+    assert_equal 12 , Setting.a
+    Setting.add_setting 'a' , :default => 13
+    assert_equal 12 , Setting.a
+    Setting.add_setting 'b' , :default => 14
+    assert_equal 14 , Setting.b
+    Setting.add_setting :b , :default => 15
+    assert_equal 14 , Setting.b
   end
+  
 
   verify 'get a list of settings' do
     Setting.add_setting :abc

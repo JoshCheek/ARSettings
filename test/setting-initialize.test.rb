@@ -31,8 +31,6 @@ class InitializingSettingsClasses < Test::Unit::TestCase
     assert_equal 1 , PredefinedValues.count
     assert PredefinedValues.setting?(:predefined_value)
     assert_equal 12 , PredefinedValues.predefined_value
-    # make sure it recognizes exclusiveness of the setting
-    assert_raises(ARSettings::AlreadyDefinedError) { PredefinedValues.add_setting :predefined_value }
   end
    
   verify 'can specify a volatility default' do

@@ -33,7 +33,7 @@ module ARSettings
     
     def add_setting( name , options={} , &proc )
       name = name.intern
-      raise self::AlreadyDefinedError.new("#{name} has already been added as a setting") if setting? name
+      return send(name) if setting? name
       add_setter(name)
       add_getter(name)
       @settings[name] = new :name => name.to_s , :postprocessing => proc || PASSTHROUGH , :volatile => !!options.fetch(:volatile,self::VOLATILIE_DEFAULT)
