@@ -18,28 +18,20 @@ module ARSettings
     PASSTHROUGH = lambda { |val| val }
     
     def reset
-      (@settings||{}).each do |setting,attributes|
-        (class << self; self; end).send :remove_method  , setting
-        (class << self; self; end).send :remove_method  , "#{setting}="
-      end
+      (@settings||{}).each { |name,atrb| remove_setter(name) ; remove_getter(name) }
       @settings = Hash.new
       @default = nil
     end
     
-    def setting?(setting)
-      @settings.has_key? setting
+    def setting?(name)
+      @settings.has_key? name
     end
     
-    def add_setting( setting , the_default=self.default , &proc )
-      (class << self; self; end).send :define_method , setting do
-        @settings[setting][:value]
-      end
-      (class << self; self; end).send :define_method , "#{setting}=" do |value|
-        @settings[setting][:value] = @settings[setting][:postprocessing][value]
-      end
-      @settings[setting] = Hash.new
-      @settings[setting][:postprocessing] = proc || PASSTHROUGH
-      send "#{setting}=" , the_default
+    def add_setting( name , the_default=self.default , &proc )
+      add_setter(name)
+      add_getter(name)
+      @settings[name] = { :postprocessing => proc || PASSTHROUGH }
+      send "#{name}=" , the_default
     end
     
     def default
@@ -48,6 +40,38 @@ module ARSettings
     
     def default=(new_default)
       @default = new_default
+    end
+    
+    def metaclass
+      class << self
+        self
+      end
+    end
+    
+    def define_method( name , &body )
+      metaclass.send :define_method , name , &body
+    end
+    
+    def remove_method(name)
+      metaclass.send :remove_method , "#{setting}="
+    end
+    
+    def add_setter(name)
+      define_method "#{name}=" do |value|
+        @settings[name][:value] = @settings[name][:postprocessing][value]
+      end
+    end
+    
+    def add_getter(name)
+      define_method(name) { @settings[name][:value] }
+    end
+    
+    def remove_setter(name)
+      metaclass.send :remove_method , "#{name}="
+    end
+    
+    def remove_getter(name)
+      metaclass.send :remove_method , name
     end
     
   end
