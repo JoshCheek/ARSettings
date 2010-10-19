@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/_helper'
 
-class CanChooseNameOfSettingClass < Test::Unit::TestCase
+class InitializingSettingsClasses < Test::Unit::TestCase
   
   # can't lazy load so that error only shows up if you try to use it
   # because we need to read the table immediately to load propagated settings
