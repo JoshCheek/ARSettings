@@ -2,6 +2,7 @@
 require 'test/unit'
 require File.dirname(__FILE__) << "/_in-memory-db"
 
+ARSettings.settings_class = 'Setting'
 
 # monkey patch Test::Unit::TestCase to make it easier to work with
 class Test::Unit::TestCase
