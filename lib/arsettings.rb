@@ -20,19 +20,27 @@ module ARSettings
         (class << self; self; end).send :remove_method  , meth
       end
       @settings = Hash.new
+      @default = nil
     end
     
     def setting?(setting)
-      @settings[setting]
+      @settings.has_key? setting
     end
     
     def add_setting(setting)
       (class << self; self; end).send :define_method , setting do
         @settings[setting]
       end
-      @settings[setting] = true
+      @settings[setting] = default
     end
     
+    def default
+      @default
+    end
+    
+    def default=(new_default)
+      @default = new_default
+    end
   end
   
 end

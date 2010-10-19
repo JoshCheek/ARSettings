@@ -31,5 +31,12 @@ class ResetTest < Test::Unit::TestCase
     Setting.reset
     assert_count 0
   end
+
+  verify 'resets default' do
+    Setting.default = 12
+    assert_equal 12 , Setting.default
+    Setting.reset
+    assert_equal nil , Setting.default
+  end
   
 end

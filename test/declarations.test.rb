@@ -14,7 +14,9 @@ class DeclarationsTest < Test::Unit::TestCase
   end
   
   verify 'defaults to Setting.default if no default is given' do
-    assert Setting
+    Setting.default = :xyz
+    Setting.add_setting :a
+    assert_equal Setting.default , Setting.a
   end
     
 end
