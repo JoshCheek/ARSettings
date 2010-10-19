@@ -16,5 +16,13 @@ module ARSettings
     Object.const_set classname , theclass    
   end
   
+  def self.serialize(data)
+    YAML::dump(data)
+  end
+  
+  def self.deserialize(data)
+    YAML::load(data)
+  end
+  
 end
 

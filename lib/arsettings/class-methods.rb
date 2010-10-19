@@ -5,7 +5,11 @@ module ARSettings
     PASSTHROUGH = lambda { |val| val }
     
     def reset
-      (@settings||{}).each { |name,atrb| remove_setter(name) ; remove_getter(name) }
+      (@settings||{}).each do |name,attributes| 
+        remove_setter(name)
+        remove_getter(name)
+        attributes[:instance].destroy
+      end
       @settings = Hash.new
       @default = nil # DEFAULT
     end
@@ -18,7 +22,7 @@ module ARSettings
       raise AlreadyDefinedError.new("#{name} has already been added as a setting") if setting? name
       add_setter(name)
       add_getter(name)
-      @settings[name] = { :postprocessing => proc || PASSTHROUGH , :instance => Setting.new(:name => name) }
+      @settings[name] = { :postprocessing => proc || PASSTHROUGH , :instance => new(:name => name) }
       send "#{name}=" , options.fetch(:default,default)
     end
     

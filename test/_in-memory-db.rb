@@ -23,7 +23,7 @@ ActiveRecord::Schema.define do
     t.text    :value
     t.timestamps
   end
-  create_table :different_name do |t|
+  create_table :different_names do |t|
     t.string  :name  , :null => false , :size => 30
     t.text    :value
     t.timestamps

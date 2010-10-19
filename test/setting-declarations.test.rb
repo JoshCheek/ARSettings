@@ -34,15 +34,25 @@ class DeclarationsTest < Test::Unit::TestCase
   
   verify 'adds record to the db' do
     assert_count 0
-    Setting.add_setting :a , :default => 'abc'
+    Setting.add_setting :a , :default => /abc/
     assert_count 1
-    setting = Setting.find_by_sql("select * from Setting").first
+    setting = Setting.find_by_sql("select * from settings").first
     assert_equal 'a' , setting.name
-    assert_equal ARSetting.serialize('abc') , setting.value
+    assert_equal( /abc/ , setting.value )
   end
   
   verify 'raises error if the setting already exists' do
     assert_nothing_raised { Setting.add_setting :a }
+    assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting :a }
+  end
+  
+  verify 'uses indifferent access' do
+    assert_nothing_raised { Setting.add_setting :a }
+    assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting 'a' }
+    assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting :a }
+    reset
+    assert_nothing_raised { Setting.add_setting 'a' }
+    assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting 'a' }
     assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting :a }
   end
   
