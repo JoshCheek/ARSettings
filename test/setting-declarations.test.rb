@@ -32,6 +32,15 @@ class DeclarationsTest < Test::Unit::TestCase
     assert_equal 456 , Setting.a
   end
   
+  verify 'adds record to the db' do
+    assert_count 0
+    Setting.add_setting :a , :default => 'abc'
+    assert_count 1
+    setting = Setting.find_by_sql("select * from Setting").first
+    assert_equal 'a' , setting.name
+    assert_equal ARSetting.serialize('abc') , setting.value
+  end
+  
   verify 'raises error if the setting already exists' do
     assert_nothing_raised { Setting.add_setting :a }
     assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting :a }

@@ -1,6 +1,5 @@
 require File.dirname(__FILE__) + '/_helper'
 
-# run the unit tests
 class TestScoping < Test::Unit::TestCase
       
   def setup
