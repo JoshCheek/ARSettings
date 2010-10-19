@@ -11,5 +11,5 @@ task :console do
   dir = File.dirname(__FILE__)
   requirements = String.new
   requirements << "-r #{dir}/test/_helper.rb"
-  system "irb #{requirements}"
+  system "irb -f #{requirements}"
 end
