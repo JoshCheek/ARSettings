@@ -80,6 +80,13 @@ module ARSettings
       metaclass.send :remove_method , name
     end
     
+    def settings
+      @settings.keys
+    end
+    
+    def settings_with_values
+      @settings.map { |name,instance| [name,instance.value] }
+    end
   end
   
 end

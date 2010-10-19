@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/_helper'
 
-class DeclarationsTest < Test::Unit::TestCase
+class SettingTest < Test::Unit::TestCase
       
   def setup
     Setting.reset
@@ -55,5 +55,23 @@ class DeclarationsTest < Test::Unit::TestCase
     assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting 'a' }
     assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting :a }
   end
+
+  verify 'get a list of settings' do
+    Setting.reset
+    Setting.add_setting :abc
+    Setting.add_setting :def
+    Setting.add_setting :ghi
+    assert_equal [:abc,:def,:ghi] , Setting.settings.sort
+  end
+  
+  verify 'get a list of settings and values' do
+    Setting.reset
+    Setting.add_setting :abc , :default => 1
+    Setting.add_setting :def , :default => 2
+    Setting.add_setting :ghi , :default => 3
+    assert_equal [[:abc,1],[:def,2],[:ghi,3]] , Setting.settings_with_values.sort_by { |name,value| name }
+  end
   
 end
+
+
