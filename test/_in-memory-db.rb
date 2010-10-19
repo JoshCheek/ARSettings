@@ -5,7 +5,7 @@ require 'active_record'
 
 
 # require the setting lib that we will be testing
-require File.dirname(__FILE__) + '/../lib/settings'
+require File.dirname(__FILE__) + '/../lib/arsettings'
 
 
 

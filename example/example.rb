@@ -1,6 +1,6 @@
 # db gets defined in the helper
-require File.dirname(__FILE__) + "/../test/_in-memory-db"
-require File.dirname(__FILE__) + "/../lib/settings"
+require File.expand_path( File.dirname(__FILE__) + "/../test/_in-memory-db" )
+require File.expand_path( File.dirname(__FILE__) + "/../lib/arsettings" )
 
 # db starts off empty
 Setting.count               # => 0
@@ -54,7 +54,7 @@ Setting[  :true    ] # => true
 Setting[  :false   ] # => false
 Setting[  :nil     ] # => nil
 Setting[  :struct  ] # => #<struct Example1 a=1, b=2>
-Setting[  :class   ] # => #<Example2:0x00000101356428 @a=1, @b=2>
+Setting[  :class   ] # => #<Example2:0x000001009e6b40 @a=1, @b=2>
 
 # did they make it into the db?
 Setting.count # => 14
