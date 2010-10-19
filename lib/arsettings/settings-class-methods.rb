@@ -91,6 +91,15 @@ module ARSettings
     def settings_with_values
       @settings.map { |name,instance| [name,instance.value] }
     end
+    
+    def method_missing(name,*args)
+      if name.to_s !~ /=$/ || ( name.to_s =~ /=$/ && args.size == 1 )
+        raise NoSuchSettingError.new("There is no setting named #{name.to_s.chomp '='}")
+      else
+        super
+      end
+    end
+    
   end
   
 end

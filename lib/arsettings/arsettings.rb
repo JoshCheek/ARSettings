@@ -1,6 +1,7 @@
 module ARSettings
   
   AlreadyDefinedError = Class.new(Exception)
+  NoSuchSettingError  = Class.new(Exception)
   
   # create the settings class
   def self.create_settings_class( classname , options=Hash.new )
@@ -10,6 +11,7 @@ module ARSettings
       extend  SettingsClass_ClassMethods
       include SettingsClass_InstanceMethods
       const_set :AlreadyDefinedError , ARSettings::AlreadyDefinedError
+      const_set :NoSuchSettingError  , ARSettings::NoSuchSettingError
       const_set :DEFAULT             , options[:default]
       const_set :VOLATILIE_DEFAULT   , options.fetch(:volatile,false)
     end

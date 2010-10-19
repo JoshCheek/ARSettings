@@ -108,6 +108,11 @@ class SettingTest < Test::Unit::TestCase
     assert_equal 5 , Setting.abcd
   end
   
+  verify 'raises NoSuchSettingError when invoking nonexistent setting' do
+    assert_raises(Setting::NoSuchSettingError) { Setting.hjk     }
+    assert_raises(Setting::NoSuchSettingError) { Setting.hjk = 1 }
+  end
+  
 end
 
 
