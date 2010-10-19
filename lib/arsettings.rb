@@ -3,10 +3,13 @@ module ARSettings
   AlreadyDefinedError = Class.new(Exception)
   
   # create the settings class
-  def self.settings_class=(classname)
+  def self.create_settings_class( classname , options=Hash.new )
+    raise AlreadyDefinedError.new("you are trying to define the settings class #{classname}, but it already exists") if Object.constants.map { |c| c.to_s }.include?(classname.to_s)
+    
     theclass = Class.new(ActiveRecord::Base) do
       extend SettingsClass_ClassMethods
       const_set :AlreadyDefinedError , ARSettings::AlreadyDefinedError
+      const_set :DEFAULT , options[:default]
       reset
     end
     Object.const_set classname , theclass    
@@ -23,19 +26,19 @@ module ARSettings
     def reset
       (@settings||{}).each { |name,atrb| remove_setter(name) ; remove_getter(name) }
       @settings = Hash.new
-      @default = nil
+      @default = nil # DEFAULT
     end
     
     def setting?(name)
       @settings.has_key? name
     end
     
-    def add_setting( name , the_default=self.default , &proc )
+    def add_setting( name , options={} , &proc )
       raise AlreadyDefinedError.new("#{name} has already been added as a setting") if setting? name
       add_setter(name)
       add_getter(name)
       @settings[name] = { :postprocessing => proc || PASSTHROUGH }
-      send "#{name}=" , the_default
+      send "#{name}=" , options.fetch(:default,default)
     end
     
     def default

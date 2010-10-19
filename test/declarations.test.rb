@@ -19,12 +19,12 @@ class DeclarationsTest < Test::Unit::TestCase
   end
   
   verify 'can add default when creating' do
-    Setting.add_setting :a , 123
+    Setting.add_setting :a , :default => 123
     assert_equal 123 , Setting.a
   end
   
   verify 'can pass proc to handle postprocessing' do
-    Setting.add_setting :a , '123' do |setting|
+    Setting.add_setting :a , :default => '123' do |setting|
       setting.to_i
     end
     assert_equal 123 , Setting.a
