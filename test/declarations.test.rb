@@ -32,4 +32,9 @@ class DeclarationsTest < Test::Unit::TestCase
     assert_equal 456 , Setting.a
   end
   
+  verify 'raises error if the setting already exists' do
+    assert_nothing_raised { Setting.add_setting :a }
+    assert_raises(Setting::AlreadyDefinedError) { Setting.add_setting :a }
+  end
+  
 end

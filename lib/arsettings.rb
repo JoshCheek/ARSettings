@@ -1,9 +1,12 @@
 module ARSettings
   
+  AlreadyDefinedError = Class.new(Exception)
+  
   # create the settings class
   def self.settings_class=(classname)
     theclass = Class.new(ActiveRecord::Base) do
       extend SettingsClass_ClassMethods
+      const_set :AlreadyDefinedError , ARSettings::AlreadyDefinedError
       reset
     end
     Object.const_set classname , theclass    
@@ -28,6 +31,7 @@ module ARSettings
     end
     
     def add_setting( name , the_default=self.default , &proc )
+      raise AlreadyDefinedError.new("#{name} has already been added as a setting") if setting? name
       add_setter(name)
       add_getter(name)
       @settings[name] = { :postprocessing => proc || PASSTHROUGH }
