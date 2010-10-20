@@ -33,6 +33,7 @@ module ARSettings
     
     def add_setting( name , options={} , &proc )
       name = name.intern
+      raise self::InvalidNameError.new("#{name} is #{name.length}, but MAX_CHARS is set to #{self::MAX_CHARS}") if name.length > self::MAX_CHARS
       if setting? name
         @settings[name].volatile        =  options[:volatile]  if options.has_key? :volatile
         @settings[name].postprocessing  =  proc                if proc
@@ -93,8 +94,10 @@ module ARSettings
     end
     
     def method_missing(name,*args)
-      if name.to_s !~ /=$/ || ( name.to_s =~ /=$/ && args.size == 1 )
-        raise NoSuchSettingError.new("There is no setting named #{name.to_s.chomp '='}")
+      if name =~ /\A[A-Z]/
+        const_get name , *args
+      elsif name.to_s !~ /=$/ || ( name.to_s =~ /=$/ && args.size == 1 )
+        raise self::NoSuchSettingError.new("There is no setting named #{name.to_s.chomp '='}")
       else
         super
       end

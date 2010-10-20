@@ -113,6 +113,16 @@ class SettingTest < Test::Unit::TestCase
     assert_raises(Setting::NoSuchSettingError) { Setting.hjk = 1 }
   end
   
+  verify 'can see constants' do
+    assert_raises(Setting::NoSuchSettingError) { Setting.hjk }
+    assert_raises(Setting.NoSuchSettingError)  { Setting.hjk }
+  end
+  
+  verify 'raises InvalidSetting for settings with over MAX_NAME chars' do
+    assert_nothing_raised { Setting.add_setting 'a' * Setting.MAX_CHARS      }
+    assert_invalid_name   { Setting.add_setting 'a' * Setting.MAX_CHARS.next }
+  end
+  
 end
 
 

@@ -34,6 +34,8 @@ ActiveRecord::Schema.define do
     :settings                         ,
     :setting2s                        ,
     :setting3s                        ,
+    :setting4s                        ,
+    :setting5s                        ,
     :volatile_tests                   ,
     :this_should_be_returneds         ,
   ].flatten.each do |tablename|

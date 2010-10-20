@@ -60,4 +60,16 @@ class InitializingSettingsClasses < Test::Unit::TestCase
     assert_raises(RuntimeError) { Setting.load_from_db }
   end
   
+  verify 'default MAX_CHARS is 30' do
+    ARSettings.create_settings_class :Setting4
+    assert_equal 30 , Setting4.MAX_CHARS
+  end
+  
+  # leave it up to the user to ensure they are not speciying more than their DB's string class
+  # if that is the case, they could switch it out with text
+  verify 'can specify MAX_CHARS' do
+    ARSettings.create_settings_class :Setting5 , :max_chars => 50
+    assert_equal 50 , Setting5.MAX_CHARS
+  end
+  
 end
