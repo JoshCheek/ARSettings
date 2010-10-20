@@ -19,8 +19,8 @@ class ResetTest < Test::Unit::TestCase
     assert_nothing_raised { Setting.abc     }
     assert_nothing_raised { Setting.abc = 1 }
     Setting.reset
-    assert_raises(NoMethodError) { Setting.abc     }
-    assert_raises(NoMethodError) { Setting.abc = 2 }
+    assert_raises(Setting::NoSuchSettingError) { Setting.abc     }
+    assert_raises(Setting::NoSuchSettingError) { Setting.abc = 2 }
   end
   
   verify 'resets setting?' do
