@@ -3,6 +3,7 @@ module ARSettings
   AlreadyDefinedError = Class.new(Exception)
   NoSuchSettingError  = Class.new(Exception)
   InvalidNameError    = Class.new(Exception)
+  InvalidScopeError   = Class.new(Exception)
   
   # create the settings class
   def self.create_settings_class( classname , options=Hash.new )
@@ -14,6 +15,8 @@ module ARSettings
       const_set :AlreadyDefinedError , ARSettings::AlreadyDefinedError
       const_set :NoSuchSettingError  , ARSettings::NoSuchSettingError
       const_set :InvalidNameError    , ARSettings::InvalidNameError
+      const_set :InvalidScopeError   , ARSettings::InvalidScopeError
+      const_set :Scoped              , ARSettings::Scoped
       const_set :DEFAULT             , options.fetch( :default   , nil   )
       const_set :MAX_CHARS           , options.fetch( :max_chars , 30    )
       const_set :VOLATILIE_DEFAULT   , options.fetch( :volatile  , false )

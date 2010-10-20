@@ -4,6 +4,7 @@ manifest = %w(
   arsettings
   settings-class-methods
   settings-instance-methods
+  scoped
   activerecord
   activerecord-class-methods
 )

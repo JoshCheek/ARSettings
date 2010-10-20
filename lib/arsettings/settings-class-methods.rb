@@ -103,6 +103,15 @@ module ARSettings
       end
     end
     
+    def scope(scope)
+      raise self::InvalidScopeError.new("#{scope.inspect} is not valid, should be a String, Symbol, or Class") unless String === scope || Symbol === scope || Class === scope
+      self::Scoped.new scope , self
+    end
+    
+    def current_scope
+      @current_scope ||= self.to_s.to_sym
+    end
+    
   end
   
 end
