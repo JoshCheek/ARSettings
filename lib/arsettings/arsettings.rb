@@ -6,18 +6,17 @@ module ARSettings
   # create the settings class
   def self.create_settings_class( classname , options=Hash.new )
     raise AlreadyDefinedError.new("you are trying to define the settings class #{classname}, but it already exists") if Object.constants.map { |c| c.to_s }.include?(classname.to_s)
-    
-    theclass = Class.new(ActiveRecord::Base) do
+    Object.const_set classname , Class.new(ActiveRecord::Base)
+    Object.const_get(classname).class_eval do
       extend  SettingsClass_ClassMethods
       include SettingsClass_InstanceMethods
       const_set :AlreadyDefinedError , ARSettings::AlreadyDefinedError
       const_set :NoSuchSettingError  , ARSettings::NoSuchSettingError
       const_set :DEFAULT             , options[:default]
       const_set :VOLATILIE_DEFAULT   , options.fetch(:volatile,false)
+      load_from_db
+      self
     end
-    Object.const_set classname , theclass
-    theclass.load_from_db
-    theclass
   end
   
   def self.serialize(data)
