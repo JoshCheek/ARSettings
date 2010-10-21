@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/_helper'
 class SettingTest < Test::Unit::TestCase
       
   def setup
-    Setting.reset
+    Setting.reset_all
     Setting.default = :the_default_value
   end
   

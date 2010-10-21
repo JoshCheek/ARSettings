@@ -36,7 +36,7 @@ module ARSettings
     
     def self.instances(settings_class)
       @instances ||= Hash.new
-      @instances[settings_class]
+      @instances[settings_class] || Hash.new
     end
    
    

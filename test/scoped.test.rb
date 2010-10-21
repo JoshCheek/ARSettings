@@ -2,6 +2,12 @@ require File.dirname(__FILE__) + '/_helper'
 
 class TestScoping < Test::Unit::TestCase
   
+  def setup
+    Setting.reset_all
+    Setting.scope(String).default = :the_default_value
+  end
+  
+  
   context 'singleton' do
     
     scoped = ARSettings::Scoped
@@ -44,10 +50,6 @@ class TestScoping < Test::Unit::TestCase
 
 
 
-  def setup
-    Setting.scope(String).reset
-    Setting.scope(String).default = :the_default_value
-  end
 
   context 'settings behaviour' do
 
@@ -173,12 +175,23 @@ class TestScoping < Test::Unit::TestCase
 
 
 
-#############################
+  context 'initializations' do
+    
+    s = Setting.scope(String)
+    scoped = ARSettings::Scoped
+
+    # allow them to add a scope length
+    # verify 'it raises an error if given a bad scope' do
+    #   assert_raises(ARSettings::InvalidScopeError) { scoped.instance Setting ,  "a"*Setting::MAX_CHARS.next         }
+    #   assert_raises(ARSettings::InvalidScopeError) { scoped.instance Setting , ("a"*Setting::MAX_CHARS.next).to_sym }
+    # end
+
+    verify 'can add a scope as an option' do
+      Setting.add_setting :abcd , :scope => Hash , :default => 12
+      assert_equal 12 , Setting.scope(Hash).abcd
+      assert_raises(ARSettings::NoSuchSettingError) { Setting.abcd }
+    end
   
-  # verify 'it raises an error if given a bad name' do
-  #   assert_raises(Setting::InvalidNameError) { scoped.instance(Setting,"a"*Setting::MAX_CHARS.next) }
-  #   assert_raises(Setting::InvalidNameError) { scoped.instance(Setting,"a"*Setting::MAX_CHARS.next) }
-  # end
   # verify 'settings classes can query for scoped settings' do
   #   Setting.add_setting :abcd , :scope => String , :default => 12
   #   assert_equal 12 , Setting.scoped_setting( String , :abcd )
@@ -236,6 +249,8 @@ class TestScoping < Test::Unit::TestCase
   # 
   # verify 'scoped settings can list all settings and values'
   # verify 'reset only applies to settings of a given scope'
+  end
+  
   
 end
 
