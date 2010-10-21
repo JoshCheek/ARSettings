@@ -21,8 +21,8 @@ class ResetTest < Test::Unit::TestCase
     assert_nothing_raised { s.abc     }
     assert_nothing_raised { s.abc = 1 }
     s.reset
-    assert_raises(s.settings_class::NoSuchSettingError) { s.abc     }
-    assert_raises(s.settings_class::NoSuchSettingError) { s.abc = 2 }
+    assert_raises(ARSettings::NoSuchSettingError) { s.abc     }
+    assert_raises(ARSettings::NoSuchSettingError) { s.abc = 2 }
   end
   
   verify 'resets setting?' do
