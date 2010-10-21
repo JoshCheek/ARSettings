@@ -111,6 +111,10 @@ module ARSettings
       @current_scope ||= self.to_s.to_sym
     end
     
+    def reset_all
+      Scoped.instances(self).each { |name,scope| scope.reset }
+    end
+    
   end
   
 end
