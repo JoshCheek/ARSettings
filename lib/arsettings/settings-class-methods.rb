@@ -1,14 +1,6 @@
 module ARSettings
   module SettingsClass_ClassMethods
     
-    def load_from_db
-      raise "this should only be called when initializing" if defined?(@settings)
-      reset_all
-      all.each do |instance|
-        add_setting instance.name , :scope => instance.scope , :value => instance.value , :volatile => instance.volatile
-      end
-    end
-
     def reset_all
       Scoped.instances(self).each { |name,scope| scope.reset }
     end
@@ -18,6 +10,7 @@ module ARSettings
     end
     
     def add_setting( name , options={} , &proc )
+      options = name if name.is_a? Hash
       if options[:scope]
         scope options[:scope]
       else
@@ -34,6 +27,17 @@ module ARSettings
       else
         super
       end
+    end
+    
+    def default
+      scope(self).default
+    end
+
+  private
+  
+    def load_from_db
+      reset_all
+      all.each { |instance| add_setting :record => instance , :scope => instance.scope }
     end
 
   end

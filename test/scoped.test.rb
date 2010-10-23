@@ -41,10 +41,22 @@ class TestScoping < Test::Unit::TestCase
       assert_nothing_raised { scoped.instance(Setting,Class)     }
     end
     
+    verify 'it considers strings, symbols, and classes to symbols' do
+      assert_equal :cLaSs  , scoped.instance(Setting,'cLaSs').scope
+      assert_equal :Symbol , scoped.instance(Setting,:Symbol).scope
+      assert_equal :Symbol , scoped.instance(Setting,Symbol).scope
+    end
+    
     verify 'raises error if settings_class is not a settings class' do
       assert_raises(scoped::InvalidSettingsClassError) { scoped.instance(String,String) }
     end
 
+    verify 'returns the same scope regardless of how it is requested' do
+      id = Setting.scope(Setting).object_id
+      assert_equal id , Setting.scope(:Setting).object_id
+      assert_equal id , Setting.scope('Setting').object_id
+    end
+    
   end
 
 
@@ -174,6 +186,9 @@ class TestScoping < Test::Unit::TestCase
 
 
 
+
+
+  
 
   context 'initializations' do
     

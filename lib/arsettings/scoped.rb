@@ -10,13 +10,14 @@ module ARSettings
         
     def self.instance(settings_class,scope)
       validate(settings_class,scope)
+      scope = normalize scope
       @instances ||= Hash.new
       @instances[settings_class] ||= Hash.new
       @instances[settings_class][scope] ||= new(settings_class,scope)
     end
     
     def self.has_instance?(settings_class,scope)
-      @instances && @instances[settings_class] && @instances[settings_class][scope]
+      @instances && @instances[settings_class] && @instances[settings_class][normalize scope]
     end
     
     def self.validate(settings_class,scope)
@@ -38,6 +39,11 @@ module ARSettings
       @instances ||= Hash.new
       @instances[settings_class] || Hash.new
     end
+    
+    def self.normalize(scope)
+      return scope if Symbol === scope
+      scope.to_s.to_sym
+    end
    
    
     # instance methods
@@ -56,9 +62,24 @@ module ARSettings
       @default = settings_class::DEFAULT
     end
     
+    def validate_name(name)
+      raise settings_class::InvalidNameError.new("#{name} is #{name.to_s.size}, but MAX_CHARS is set to #{settings_class::MAX_CHARS}") if 
+        name.to_s.length > settings_class::MAX_CHARS
+    end
+    
     def add_setting( name , options={} , &proc )
+      if name.is_a? Hash
+        options = name
+        record = options[:record]
+        record.postprocessing = PASSTHROUGH
+        name = record.name.to_sym
+        add_setter(name)
+        add_getter(name)
+        @settings[name.to_sym] = record
+        return record.value
+      end
       name = name.to_sym
-      raise settings_class::InvalidNameError.new("#{name} is #{name.to_s.size}, but MAX_CHARS is set to #{settings_class::MAX_CHARS}") if name.to_s.length > settings_class::MAX_CHARS
+      validate_name(name)
       if setting? name
         @settings[name].volatile        =  options[:volatile]  if options.has_key? :volatile
         @settings[name].postprocessing  =  proc                if proc
@@ -107,10 +128,10 @@ module ARSettings
     end
     
     def method_missing(name,*args)
-      if name =~ /\A[A-Z]/
+      if name.to_s =~ /\A[A-Z]/
         const_get name , *args
       elsif name.to_s !~ /=$/ || ( name.to_s =~ /=$/ && args.size == 1 )
-        raise settings_class::NoSuchSettingError.new("There is no setting named #{name.to_s.chomp '='}")
+        raise ARSettings::NoSuchSettingError.new("There is no setting named #{name.to_s.chomp '='}")
       else
         super
       end
@@ -124,8 +145,17 @@ module ARSettings
       @settings.map { |name,instance| [name,instance.value] }
     end
 
+    def default=(default)
+      @default = default
+    end
 
-    attr_accessor :default
+    def default
+      if defined?(@default)
+        @default
+      else
+        settings_class::DEFAULT
+      end
+    end
     
   end
 end

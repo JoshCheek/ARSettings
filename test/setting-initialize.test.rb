@@ -16,22 +16,56 @@ class InitializingSettingsClasses < Test::Unit::TestCase
   verify 'can set default when initializing' do
     ARSettings.create_settings_class 'Setting3' , :default => 123
     assert_equal 123 , Setting3.default
-    Setting3.reset
+    Setting3.reset_all
     assert_equal 123 , Setting3.default
     Setting3.default = 456
     assert_equal 456 , Setting3.default
-    Setting3.reset
+    Setting3.reset_all
     assert_equal 123 , Setting3.default
   end
   
+  verify 'setting default on scope causes it to override its settings_class default' do
+    ARSettings.create_settings_class 'Setting7' , :default => 123
+    assert_equal 123 , Setting7.default
+    assert_equal 123 , Setting7.scope(String).default
+    Setting7.reset_all
+    assert_equal 123 , Setting7.default
+    assert_equal 123 , Setting7.scope(String).default
+    Setting7.scope(String).default = 456
+    assert_equal 123 , Setting7.default
+    assert_equal 456 , Setting7.scope(String).default
+  end
+  
+  verify 'resetting a scope will reset its default' do
+    ARSettings.create_settings_class 'Setting8' , :default => 123
+    Setting8.scope(String).default = 987
+    assert_equal 987 , Setting8.scope(String).default
+    Setting8.reset_all
+    assert_equal 123 , Setting8.scope(String).default
+  end
+  
+  verify "setting one scopes default doesn't affect another scope" do
+    ARSettings.create_settings_class 'Setting9' , :default => 123
+    Setting9.scope(String).default = 1
+    Setting9.scope(Hash).default = 2
+    assert_equal 1 , Setting9.scope(String).default
+    assert_equal 2 , Setting9.scope(Hash).default
+    Setting9.scope(String).reset
+    assert_equal 123 , Setting9.scope(String).default
+    assert_equal 2   , Setting9.scope(Hash).default
+  end
+  
   verify 'loads up values previously stored in the db' do
-    $sql_executor.silent_execute "insert into predefined_values (name,value) values ('predefined_value','#{ARSettings.serialize(12)}')"
+    $sql_executor.silent_execute "insert into predefined_values (name,value,scope,volatile) values ('predefined_value','#{ARSettings.serialize(12)}','PredefinedValues','f')"
+    $sql_executor.silent_execute "insert into predefined_values (name,value,scope,volatile) values ('predefined_value','#{ARSettings.serialize(13)}','String','f')"
     ARSettings.create_settings_class :PredefinedValues
     # make sure it loads the value
-    assert_equal 1 , PredefinedValues.count
-    assert PredefinedValues.setting?(:predefined_value)
+    assert_equal 2 , PredefinedValues.count
+    assert PredefinedValues.scope(PredefinedValues).setting?(:predefined_value)
+    assert PredefinedValues.scope(String).setting?(:predefined_value)
     assert_equal 12 , PredefinedValues.predefined_value
-    PredefinedValues.add_setting :predefined_value , :default => 13
+    assert_equal 13 , PredefinedValues.scope(String).predefined_value
+    PredefinedValues.add_setting :predefined_value , :default => 20
     assert_equal 12 , PredefinedValues.predefined_value
   end
    
@@ -57,7 +91,13 @@ class InitializingSettingsClasses < Test::Unit::TestCase
   end
   
   verify 'cannot reload from db' do
-    assert_raises(RuntimeError) { Setting.load_from_db }
+    begin
+      flag = false
+      Setting.load_from_db
+      flag = true
+    rescue Exception
+      assert !flag
+    end
   end
   
   verify 'default MAX_CHARS is 30' do
@@ -71,5 +111,5 @@ class InitializingSettingsClasses < Test::Unit::TestCase
     ARSettings.create_settings_class :Setting5 , :max_chars => 50
     assert_equal 50 , Setting5.MAX_CHARS
   end
-  
+    
 end

@@ -20,7 +20,7 @@ module ARSettings
       const_set :DEFAULT             , options.fetch( :default   , nil   )
       const_set :MAX_CHARS           , options.fetch( :max_chars , 30    )
       const_set :VOLATILIE_DEFAULT   , options.fetch( :volatile  , false )
-      load_from_db
+      send :load_from_db
       self
     end
   end
