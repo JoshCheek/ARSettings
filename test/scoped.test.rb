@@ -176,11 +176,6 @@ class TestScoping < Test::Unit::TestCase
       assert_raises(ARSettings::NoSuchSettingError) { s.hjk     }
       assert_raises(ARSettings::NoSuchSettingError) { s.hjk = 1 }
     end
-  
-    verify 'can see constants' do
-      assert_raises(s.settings_class::NoSuchSettingError) { s.hjk }
-      assert_raises(s.settings_class.NoSuchSettingError)  { s.hjk }
-    end
     
     verify 'raises InvalidSetting for settings with over MAX_NAME chars' do
       assert_nothing_raised { s.add_setting 'a' * s.settings_class.MAX_CHARS      }
@@ -222,7 +217,7 @@ class TestScoping < Test::Unit::TestCase
     end
   
     verify 'Setting.scope(scope) returns a ScopedSetting object' do
-      assert_equal Setting::Scoped , Setting.scope(String).class
+      assert_equal ARSettings::Scoped , Setting.scope(String).class
     end
   
     verify 'scoped knows its settings class' do
@@ -245,8 +240,8 @@ class TestScoping < Test::Unit::TestCase
   
     verify 'raises NoSuchSettingError when given incorrect scope' do
       s.add_setting :abcd , :default => 12
-      assert_raises(Setting::NoSuchSettingError) { Setting.abcd }
-      assert_raises(Setting::NoSuchSettingError) { Setting.abcd = 3 }
+      assert_raises(ARSettings::NoSuchSettingError) { Setting.abcd }
+      assert_raises(ARSettings::NoSuchSettingError) { Setting.abcd = 3 }
       assert_nothing_raised { s.abcd }
       assert_nothing_raised { s.abcd = 5 }
     end

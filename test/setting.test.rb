@@ -109,13 +109,8 @@ class SettingTest < Test::Unit::TestCase
   end
   
   verify 'raises NoSuchSettingError when invoking nonexistent setting' do
-    assert_raises(Setting::NoSuchSettingError) { Setting.hjk     }
-    assert_raises(Setting::NoSuchSettingError) { Setting.hjk = 1 }
-  end
-  
-  verify 'can see constants' do
-    assert_raises(Setting::NoSuchSettingError) { Setting.hjk }
-    assert_raises(Setting.NoSuchSettingError)  { Setting.hjk }
+    assert_raises(ARSettings::NoSuchSettingError) { Setting.hjk     }
+    assert_raises(ARSettings::NoSuchSettingError) { Setting.hjk = 1 }
   end
   
   verify 'raises InvalidSetting for settings with over MAX_NAME chars' do

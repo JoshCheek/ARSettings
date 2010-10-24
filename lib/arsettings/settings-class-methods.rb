@@ -23,7 +23,6 @@ module ARSettings
         const_get name , *args
       elsif name.to_s !~ /=$/ || ( name.to_s =~ /=$/ && args.size == 1 )
         scope(self).send name , *args
-        # raise self::NoSuchSettingError.new("There is no setting named #{name.to_s.chomp '='}")
       else
         super
       end
