@@ -50,7 +50,7 @@ class TestScoping < Test::Unit::TestCase
     verify 'raises error if settings_class is not a settings class' do
       assert_raises(scoped::InvalidSettingsClassError) { scoped.instance(String,String) }
     end
-
+  
     verify 'returns the same scope regardless of how it is requested' do
       id = Setting.scope(Setting).object_id
       assert_equal id , Setting.scope(:Setting).object_id
@@ -58,21 +58,26 @@ class TestScoping < Test::Unit::TestCase
     end
     
   end
-
-
-
-
-
+  
+  
+  
+  
+  
   context 'settings behaviour' do
-
+  
     s = Setting.scope(String)
-
+  
     verify 'can query whether a setting exists with setting?, and can declare settings with add_setting' do
       assert !s.setting?(:a)
       s.add_setting :a
       assert s.setting?(:a)
     end
-
+    
+    verify "add_setting returns the setting's value" do
+      assert_equal 1 , s.add_setting( :xyz , :default => 1)
+      assert_equal 1 , s.add_setting( :xyz , :default => 2)
+    end
+  
     verify 'defaults to Setting.default if no default is given' do
       s.add_setting :a
       assert_equal :the_default_value , s.a
@@ -194,33 +199,30 @@ class TestScoping < Test::Unit::TestCase
     
     s = Setting.scope(String)
     scoped = ARSettings::Scoped
-
-    # allow them to add a scope length
-    # verify 'it raises an error if given a bad scope' do
-    #   assert_raises(ARSettings::InvalidScopeError) { scoped.instance Setting ,  "a"*Setting::MAX_CHARS.next         }
-    #   assert_raises(ARSettings::InvalidScopeError) { scoped.instance Setting , ("a"*Setting::MAX_CHARS.next).to_sym }
-    # end
-
+    
+    verify 'it raises an error if given a scope that is not string / symbol / class' do
+      assert_nothing_raised { Setting.scope "string" }
+      assert_nothing_raised { Setting.scope :Symbol  }
+      assert_nothing_raised { Setting.scope Class    }
+      assert_raises(ARSettings::InvalidScopeError) { Setting.scope 1 }
+    end
+    
     verify 'can add a scope as an option' do
       Setting.add_setting :abcd , :scope => Hash , :default => 12
       assert_equal 12 , Setting.scope(Hash).abcd
       assert_raises(ARSettings::NoSuchSettingError) { Setting.abcd }
     end
+    
+    verify 'can scope settings with classes' do
+      Setting.add_setting :abcd , :scope => String , :default => 12
+      assert_equal 12 , s.abcd
+      assert_equal :String , Setting.find( :first , :conditions => { :name => 'abcd' } ).scope
+    end
   
-  # verify 'settings classes can query for scoped settings' do
-  #   Setting.add_setting :abcd , :scope => String , :default => 12
-  #   assert_equal 12 , Setting.scoped_setting( String , :abcd )
-  # end
-  # 
-  # verify 'can scope settings with classes' do
-  #   setting = Setting.add_setting :abcd , :scope => String , :default => 12
-  #   assert_equal :String , setting.current_scope
-  # end
-  # 
-  # verify 'Setting.scope(scope) returns a ScopedSetting object' do
-  #   assert_equal Setting::Scoped , Setting.scope(String).class
-  # end
-  # 
+    verify 'Setting.scope(scope) returns a ScopedSetting object' do
+      assert_equal Setting::Scoped , Setting.scope(String).class
+    end
+  
   # verify 'scoped knows its settings class' do
   #   assert_equal Setting , Setting.scope(String).settings_class
   # end

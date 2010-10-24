@@ -30,6 +30,10 @@ module ARSettings
       super
       save
     end
+        
+    def scope
+      @scope ||= super.to_sym
+    end
     
   end
   

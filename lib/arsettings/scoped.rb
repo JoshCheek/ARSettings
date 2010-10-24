@@ -68,7 +68,7 @@ module ARSettings
     end
     
     def add_setting( name , options={} , &proc )
-      if name.is_a? Hash
+      if name.is_a? Hash # internal use only
         options = name
         record = options[:record]
         record.postprocessing = PASSTHROUGH
@@ -83,10 +83,11 @@ module ARSettings
       if setting? name
         @settings[name].volatile        =  options[:volatile]  if options.has_key? :volatile
         @settings[name].postprocessing  =  proc                if proc
+        send name
       else
         add_setter(name)
         add_getter(name)
-        @settings[name] = settings_class.new :name => name.to_s , :postprocessing => proc || PASSTHROUGH , :volatile => !!options.fetch(:volatile,settings_class::VOLATILIE_DEFAULT)
+        @settings[name] = settings_class.new :name => name.to_s , :postprocessing => proc || PASSTHROUGH , :volatile => !!options.fetch(:volatile,settings_class::VOLATILIE_DEFAULT) , :scope => scope
         send "#{name}=" , options.fetch(:default,default)
       end
     end
