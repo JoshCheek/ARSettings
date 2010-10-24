@@ -20,6 +20,20 @@ module ARSettings
     end
   end
   
+  # can be used to put settings on any object
+  def self.on(object)
+    def object.has_setting(name)
+      scope = Setting.scope(self.class)
+      scope.add name
+      (class << self ; self ; end).instance_eval do
+        getter = name
+        setter = "#{name}="
+        define_method getter do       scope.send getter       end
+        define_method setter do |arg| scope.send setter , arg end
+      end
+    end
+  end
+  
   def self.serialize(data)
     YAML::dump(data)
   end
