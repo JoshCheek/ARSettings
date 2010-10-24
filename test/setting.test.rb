@@ -129,6 +129,12 @@ class SettingTest < Test::Unit::TestCase
     end
   end
   
+  verify 'add_setting returns the value of the setting' do
+    assert_equal 100 , Setting.add_setting( :a , :default => 100)
+    assert_equal 101 , Setting.scope(String).add_setting( :b , :default => 101)
+    assert_equal 101 , Setting.scope(String).add_setting( :b , :default => 102)
+  end
+  
 end
 
 
