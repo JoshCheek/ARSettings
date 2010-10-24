@@ -251,8 +251,25 @@ class TestScoping < Test::Unit::TestCase
       assert_nothing_raised { s.abcd = 5 }
     end
   
-    verify 'scoped settings can list all settings and values'
-    verify 'reset only applies to settings of a given scope'
+    verify 'scoped settings can list all settings and values' do
+      s.add_setting :abcd , :default => 1
+      s.add_setting :efgh , :default => 2
+      s.add_setting :ijkl , :default => 3
+      assert_equal [:abcd,:efgh,:ijkl] , s.settings.sort 
+      assert_equal [[:abcd,1],[:efgh,2],[:ijkl,3]] , s.settings_with_values.sort_by { |setting,value| value }
+    end
+    
+    verify 'reset only applies to settings of a given scope' do
+      string = Setting.scope(String)
+      hash   = Setting.scope(Hash)
+      string.add_setting :abcd , :default => 1
+      hash.add_setting :abcd   , :default => 2
+      string.reset
+      assert_equal 1 , Setting.count
+      assert_equal :Hash , Setting.first.scope
+      assert_equal 2 , hash.abcd
+    end
+    
   end
   
   
