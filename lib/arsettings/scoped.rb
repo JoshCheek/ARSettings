@@ -63,21 +63,11 @@ module ARSettings
     end
     
     def validate_name(name)
-      raise settings_class::InvalidNameError.new("#{name} is #{name.to_s.size}, but MAX_CHARS is set to #{settings_class::MAX_CHARS}") if 
-        name.to_s.length > settings_class::MAX_CHARS
+      raise settings_class::InvalidNameError.new("#{name} is #{name.to_s.size}, but MAX_CHARS is set to #{settings_class::MAX_CHARS}") if name.to_s.length > settings_class::MAX_CHARS
     end
     
     def add_setting( name , options={} , &proc )
-      if name.is_a? Hash # internal use only
-        options = name
-        record = options[:record]
-        record.postprocessing = PASSTHROUGH
-        name = record.name.to_sym
-        add_setter(name)
-        add_getter(name)
-        @settings[name.to_sym] = record
-        return record.value
-      end
+      return(add_from_instance name[:record]) if name.is_a? Hash # internal use only
       name = name.to_sym
       validate_name(name)
       if setting? name
@@ -158,33 +148,18 @@ module ARSettings
       end
     end
     
+  private
+  
+    def add_from_instance(record)
+      record.postprocessing = PASSTHROUGH
+      name = record.name.to_sym
+      validate_name(name)
+      add_setter(name)
+      add_getter(name)
+      @settings[name.to_sym] = record
+      return record.value
+    end
+    
   end
 end
 
-
-
-#     def load_from_db
-#       raise "this should only be called when initializing" if defined?(@settings)
-#       reset
-#       new_settings = Hash.new
-#       all.each do |instance|
-#         name = instance.name.intern
-#         new_settings[name] = instance
-#         add_setter name
-#         add_getter name
-#       end
-#       @settings = new_settings
-#     end
-#     
-#     def scope(scope)
-#       Scoped.instance self , scope
-#     end
-#     
-#     def current_scope
-#       @current_scope ||= self.to_s.to_sym
-#     end
-#     
-#   end
-#   
-# end
-# 

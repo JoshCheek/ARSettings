@@ -111,5 +111,10 @@ class InitializingSettingsClasses < Test::Unit::TestCase
     ARSettings.create_settings_class :Setting5 , :max_chars => 50
     assert_equal 50 , Setting5.MAX_CHARS
   end
+
+  verify 'raises errors if values loaded from the db violate maxlength' do
+    $sql_executor.silent_execute "insert into setting10s (name,value,scope,volatile) values ('abc','#{ARSettings.serialize(12)}','Setting10','f')"
+    assert_raises(ARSettings::InvalidNameError) { ARSettings.create_settings_class :Setting10 , :max_chars => 2 }
+  end
     
 end
