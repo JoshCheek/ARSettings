@@ -1,7 +1,7 @@
 module ARSettings    
   module ActiveRecord_ClassMethods
     
-    def add_setting( name , options=Hash.new )
+    def add( name , options=Hash.new )
       settings_class
     end
     

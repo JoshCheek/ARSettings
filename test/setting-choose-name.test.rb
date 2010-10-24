@@ -8,7 +8,7 @@ class CanChooseNameOfSettingClass < Test::Unit::TestCase
     assert_nothing_raised { DifferentName }
     assert_equal Class , DifferentName.class
     assert DifferentName.ancestors.include?(ActiveRecord::Base)
-    assert_nothing_raised { DifferentName.add_setting :abc , :default => 12 }
+    assert_nothing_raised { DifferentName.add :abc , :default => 12 }
     assert_equal 12 , DifferentName.abc
   end
     

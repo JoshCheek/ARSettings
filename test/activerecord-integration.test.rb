@@ -22,8 +22,8 @@ class TestScoping < Test::Unit::TestCase
     # klass = get_class
     # klass.class_eval do 
     #   has_settings
-    #   add_setting :abcd , :default => 3
-    #   add_setting :efgh , :default => 4
+    #   add :abcd , :default => 3
+    #   add :efgh , :default => 4
     # end
     # assert_equal 3 , klass.abcd
     # assert_equal 4 , klass.efgh

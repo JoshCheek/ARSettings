@@ -68,7 +68,7 @@ module ARSettings
       raise ARSettings::InvalidNameError.new("#{name.inspect} is not a valid settings name, because it is not a valid method name since it does not match #{regex.inspect}") if name !~ regex
     end
     
-    def add_setting( name , options={} , &proc )
+    def add( name , options={} , &proc )
       return(add_from_instance name[:record]) if name.is_a? Hash # internal use only
       name = name.to_sym
       validate_name(name)

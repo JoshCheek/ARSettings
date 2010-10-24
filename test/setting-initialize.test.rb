@@ -65,15 +65,15 @@ class InitializingSettingsClasses < Test::Unit::TestCase
     assert PredefinedValues.scope(String).setting?(:predefined_value)
     assert_equal 12 , PredefinedValues.predefined_value
     assert_equal 13 , PredefinedValues.scope(String).predefined_value
-    PredefinedValues.add_setting :predefined_value , :default => 20
+    PredefinedValues.add :predefined_value , :default => 20
     assert_equal 12 , PredefinedValues.predefined_value
   end
    
   verify 'can specify a volatility default' do
     ARSettings.create_settings_class :VolatileTest    , :volatile => true
-    VolatileTest.add_setting :abcd , :default => 1    , :volatile => false
-    VolatileTest.add_setting :efgh , :default => 10   , :volatile => true
-    VolatileTest.add_setting :ijkl , :default => 100
+    VolatileTest.add :abcd , :default => 1    , :volatile => false
+    VolatileTest.add :efgh , :default => 10   , :volatile => true
+    VolatileTest.add :ijkl , :default => 100
     assert_equal 1   , VolatileTest.abcd
     assert_equal 10  , VolatileTest.efgh
     assert_equal 100 , VolatileTest.ijkl

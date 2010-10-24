@@ -4,7 +4,7 @@ class ResetTest < Test::Unit::TestCase
   
   def setup
     Setting.scope(String).reset
-    Setting.scope(String).add_setting :abc
+    Setting.scope(String).add :abc
   end
   
   s = Setting.scope(String)
@@ -46,8 +46,8 @@ class ResetTest < Test::Unit::TestCase
   
   verify 'can reset all scopes' do
     Setting.reset_all
-    Setting.scope(String).add_setting :abcd
-    Setting.scope(Hash).add_setting :efgh
+    Setting.scope(String).add :abcd
+    Setting.scope(Hash).add :efgh
     assert_equal 2 , Setting.count
     Setting.reset_all
     assert_equal 0 , Setting.count
@@ -55,16 +55,16 @@ class ResetTest < Test::Unit::TestCase
   
   verify "resetting one settings class' scope doesn't impact others" do
     ARSettings.create_settings_class 'Setting6'
-    Setting6.scope(String).add_setting :abc
-    Setting6.scope(Hash).add_setting :def
-    Setting.scope(:ghi).add_setting :jkl
+    Setting6.scope(String).add :abc
+    Setting6.scope(Hash).add :def
+    Setting.scope(:ghi).add :jkl
     assert_equal 2 , Setting6.count
     assert_equal 2 , Setting.count
     Setting.reset_all
     assert_equal 2 , Setting6.count
     assert_equal 0 , Setting.count
-    Setting.scope(:ghi).add_setting :mno
-    Setting.scope(:ghi).add_setting :pqr
+    Setting.scope(:ghi).add :mno
+    Setting.scope(:ghi).add :pqr
     Setting6.reset_all
     assert_equal 0 , Setting6.count
     assert_equal 2 , Setting.count

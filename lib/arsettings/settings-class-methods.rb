@@ -9,13 +9,13 @@ module ARSettings
       Scoped.instance self , scope
     end
     
-    def add_setting( name , options={} , &proc )
+    def add( name , options={} , &proc )
       options = name if name.is_a? Hash
       if options[:scope]
         scope options[:scope]
       else
         scope self
-      end.add_setting( name , options , &proc )
+      end.add( name , options , &proc )
     end
      
     def method_missing(name,*args)
@@ -36,7 +36,7 @@ module ARSettings
   
     def load_from_db
       reset_all
-      all.each { |instance| add_setting :record => instance , :scope => instance.scope }
+      all.each { |instance| add :record => instance , :scope => instance.scope }
     end
 
   end

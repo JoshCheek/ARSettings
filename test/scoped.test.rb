@@ -67,29 +67,29 @@ class TestScoping < Test::Unit::TestCase
   
     s = Setting.scope(String)
   
-    verify 'can query whether a setting exists with setting?, and can declare settings with add_setting' do
+    verify 'can query whether a setting exists with setting?, and can declare settings with add' do
       assert !s.setting?(:a)
-      s.add_setting :a
+      s.add :a
       assert s.setting?(:a)
     end
     
-    verify "add_setting returns the setting's value" do
-      assert_equal 1 , s.add_setting( :xyz , :default => 1)
-      assert_equal 1 , s.add_setting( :xyz , :default => 2)
+    verify "add returns the setting's value" do
+      assert_equal 1 , s.add( :xyz , :default => 1)
+      assert_equal 1 , s.add( :xyz , :default => 2)
     end
   
     verify 'defaults to Setting.default if no default is given' do
-      s.add_setting :a
+      s.add :a
       assert_equal :the_default_value , s.a
     end
       
     verify 'can add default when creating' do
-      s.add_setting :a , :default => 123
+      s.add :a , :default => 123
       assert_equal 123 , s.a
     end
       
     verify 'can pass proc to handle postprocessing' do
-      s.add_setting :a , :default => '123' do |setting|
+      s.add :a , :default => '123' do |setting|
         setting.to_i
       end
       assert_equal 123 , s.a
@@ -99,7 +99,7 @@ class TestScoping < Test::Unit::TestCase
       
     verify 'adds record to the db' do
       assert_count 0
-      s.add_setting :a , :default => /abc/
+      s.add :a , :default => /abc/
       assert_count 1
       setting = Setting.find_by_sql("select * from settings").first
       assert_equal 'a' , setting.name
@@ -107,38 +107,38 @@ class TestScoping < Test::Unit::TestCase
     end
       
     verify 'does not raise error if the setting already exists' do
-      assert_nothing_raised { s.add_setting :a }
-      assert_nothing_raised { s.add_setting :a }
+      assert_nothing_raised { s.add :a }
+      assert_nothing_raised { s.add :a }
     end
       
     verify 'does not overwrite current value with default when added repeatedly' do
-      s.add_setting :a , :default => 12
+      s.add :a , :default => 12
       assert_equal 12 , s.a
-      s.add_setting 'a' , :default => 13
+      s.add 'a' , :default => 13
       assert_equal 12 , s.a
-      s.add_setting 'b' , :default => 14
+      s.add 'b' , :default => 14
       assert_equal 14 , s.b
-      s.add_setting :b , :default => 15
+      s.add :b , :default => 15
       assert_equal 14 , s.b
     end
       
     verify 'get a list of settings' do
-      s.add_setting :abc
-      s.add_setting :def
-      s.add_setting :ghi
+      s.add :abc
+      s.add :def
+      s.add :ghi
       assert_equal [:abc,:def,:ghi] , s.settings.sort
     end
       
     verify 'get a list of settings and values' do
-      s.add_setting :abc , :default => 1
-      s.add_setting :def , :default => 2
-      s.add_setting :ghi , :default => 3
+      s.add :abc , :default => 1
+      s.add :def , :default => 2
+      s.add :ghi , :default => 3
       assert_equal [[:abc,1],[:def,2],[:ghi,3]] , s.settings_with_values.sort_by { |name,value| name }
     end
       
     verify 'can specify that object should reload from db each time' do
-      s.add_setting :abcd , :default => 1
-      s.add_setting :efgh , :default => 10 , :volatile => true
+      s.add :abcd , :default => 1
+      s.add :efgh , :default => 10 , :volatile => true
       assert_equal 1  , s.abcd
       assert_equal 10 , s.efgh
       $sql_executor.silent_execute "update settings set value='#{ARSettings.serialize(2)}' where name='abcd'"
@@ -148,7 +148,7 @@ class TestScoping < Test::Unit::TestCase
     end
       
     verify 'retains postprocessing after a reload' do
-      s.add_setting( :abcd , :default => 1 , :volatile => true ) { |val| val.to_i }
+      s.add( :abcd , :default => 1 , :volatile => true ) { |val| val.to_i }
       assert_equal 1 , s.abcd
       $sql_executor.silent_execute "update settings set value='#{ARSettings.serialize(2)}' where name='abcd'"
       assert_equal 2  , s.abcd
@@ -157,18 +157,18 @@ class TestScoping < Test::Unit::TestCase
     end
       
     verify 'readding the setting allows you to update volatility and postprocessing' do
-      s.add_setting( :abcd , :default => "12.5" , :volatile => false ) { |val| val.to_f }
+      s.add( :abcd , :default => "12.5" , :volatile => false ) { |val| val.to_f }
       assert_equal 12.5 , s.abcd
       $sql_executor.silent_execute "update settings set value='#{ARSettings.serialize(5.5)}' where name='abcd'"
       assert_equal 12.5 , s.abcd
-      s.add_setting :abcd , :volatile => true
+      s.add :abcd , :volatile => true
       assert_equal 5.5 , s.abcd
-      s.add_setting( :abcd , :volatile => true ) { |val| val.to_i }
+      s.add( :abcd , :volatile => true ) { |val| val.to_i }
       assert_equal 5 , s.abcd
     end
       
     verify 'defaults get run through the postprocessor' do
-      s.add_setting( :abcd , :default => "5" ) { |i| i.to_i }
+      s.add( :abcd , :default => "5" ) { |i| i.to_i }
       assert_equal 5 , s.abcd
     end
       
@@ -178,8 +178,8 @@ class TestScoping < Test::Unit::TestCase
     end
     
     verify 'raises InvalidSetting for settings with over MAX_NAME chars' do
-      assert_nothing_raised { s.add_setting 'a' * s.settings_class.MAX_CHARS      }
-      assert_invalid_name   { s.add_setting 'a' * s.settings_class.MAX_CHARS.next }
+      assert_nothing_raised { s.add 'a' * s.settings_class.MAX_CHARS      }
+      assert_invalid_name   { s.add 'a' * s.settings_class.MAX_CHARS.next }
     end
         
   end
@@ -205,13 +205,13 @@ class TestScoping < Test::Unit::TestCase
     end
     
     verify 'can add a scope as an option' do
-      Setting.add_setting :abcd , :scope => Hash , :default => 12
+      Setting.add :abcd , :scope => Hash , :default => 12
       assert_equal 12 , Setting.scope(Hash).abcd
       assert_raises(ARSettings::NoSuchSettingError) { Setting.abcd }
     end
     
     verify 'can scope settings with classes' do
-      Setting.add_setting :abcd , :scope => String , :default => 12
+      Setting.add :abcd , :scope => String , :default => 12
       assert_equal 12 , s.abcd
       assert_equal :String , Setting.find( :first , :conditions => { :name => 'abcd' } ).scope
     end
@@ -232,14 +232,14 @@ class TestScoping < Test::Unit::TestCase
     
   
     verify 'can add and remove variables within a given scope' do
-      s.add_setting :abcd , :default => 12
+      s.add :abcd , :default => 12
       assert_equal 12 , s.abcd
       s.abcd = 5
       assert_equal 5 , s.abcd
     end
   
     verify 'raises NoSuchSettingError when given incorrect scope' do
-      s.add_setting :abcd , :default => 12
+      s.add :abcd , :default => 12
       assert_raises(ARSettings::NoSuchSettingError) { Setting.abcd }
       assert_raises(ARSettings::NoSuchSettingError) { Setting.abcd = 3 }
       assert_nothing_raised { s.abcd }
@@ -247,9 +247,9 @@ class TestScoping < Test::Unit::TestCase
     end
   
     verify 'scoped settings can list all settings and values' do
-      s.add_setting :abcd , :default => 1
-      s.add_setting :efgh , :default => 2
-      s.add_setting :ijkl , :default => 3
+      s.add :abcd , :default => 1
+      s.add :efgh , :default => 2
+      s.add :ijkl , :default => 3
       assert_equal [:abcd,:efgh,:ijkl] , s.settings.sort 
       assert_equal [[:abcd,1],[:efgh,2],[:ijkl,3]] , s.settings_with_values.sort_by { |setting,value| value }
     end
@@ -257,8 +257,8 @@ class TestScoping < Test::Unit::TestCase
     verify 'reset only applies to settings of a given scope' do
       string = Setting.scope(String)
       hash   = Setting.scope(Hash)
-      string.add_setting :abcd , :default => 1
-      hash.add_setting :abcd   , :default => 2
+      string.add :abcd , :default => 1
+      hash.add :abcd   , :default => 2
       string.reset
       assert_equal 1 , Setting.count
       assert_equal :Hash , Setting.first.scope
