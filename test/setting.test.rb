@@ -123,6 +123,12 @@ class SettingTest < Test::Unit::TestCase
     assert_invalid_name   { Setting.add_setting 'a' * Setting.MAX_CHARS.next }
   end
   
+  verify 'raises Invalid name error if the setting is not a valid method name' do
+    [ '123' , '1abc' , '.abc' , 'Constant' , 'ab-c' , 'ab.c' , 'ab)c' , 'ab@c' , 'a:b' ].each do |invalid_name|
+      assert_invalid_name { Setting.add_setting invalid_name }
+    end
+  end
+  
 end
 
 

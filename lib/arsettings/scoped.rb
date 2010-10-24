@@ -64,6 +64,8 @@ module ARSettings
     
     def validate_name(name)
       raise settings_class::InvalidNameError.new("#{name} is #{name.to_s.size}, but MAX_CHARS is set to #{settings_class::MAX_CHARS}") if name.to_s.length > settings_class::MAX_CHARS
+      regex = /\A[a-z_][a-zA-Z_]*\Z/m
+      raise settings_class::InvalidNameError.new("#{name.inspect} is not a valid settings name, because it is not a valid method name since it does not match #{regex.inspect}") if name !~ regex
     end
     
     def add_setting( name , options={} , &proc )
