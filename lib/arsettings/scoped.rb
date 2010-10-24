@@ -65,7 +65,7 @@ module ARSettings
     def validate_name(name)
       raise ARSettings::InvalidNameError.new("#{name} is #{name.to_s.size}, but MAX_CHARS is set to #{settings_class::MAX_CHARS}") if name.to_s.length > settings_class::MAX_CHARS
       regex = /\A[a-z_][a-zA-Z_]*\Z/m
-      raise ARSettings::InvalidNameError.new("#{name.inspect} is not a valid settings name, because it is not a valid method name since it does not match #{regex.inspect}") if name !~ regex
+      raise ARSettings::InvalidNameError.new("#{name.inspect} is not a valid settings name, because it is not a valid method name since it does not match #{regex.inspect}") if name.to_s !~ regex
     end
     
     def add( name , options={} , &proc )
@@ -122,7 +122,7 @@ module ARSettings
     
     def method_missing(name,*args)
       if name.to_s =~ /\A[A-Z]/
-        const_get name , *args
+        settings_class.const_get name , *args
       elsif name.to_s !~ /=$/ || ( name.to_s =~ /=$/ && args.size == 1 )
         raise ARSettings::NoSuchSettingError.new("There is no setting named #{name.to_s.chomp '='}")
       else

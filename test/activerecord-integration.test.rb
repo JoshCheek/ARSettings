@@ -19,14 +19,14 @@ class TestScoping < Test::Unit::TestCase
   end
   
   verify 'can add settings after declaring that we have settings' do
-    # klass = get_class
-    # klass.class_eval do 
-    #   has_settings
-    #   add :abcd , :default => 3
-    #   add :efgh , :default => 4
-    # end
-    # assert_equal 3 , klass.abcd
-    # assert_equal 4 , klass.efgh
+    klass = get_class
+    klass.class_eval do 
+      has_settings
+      add_setting :abcd , :default => 3
+      add_setting :efgh , :default => 4
+    end
+    assert_equal 3 , klass.abcd
+    assert_equal 4 , klass.efgh
   end
 
   verify 'can specify that a setting should be able to be looked up from the instance'

@@ -62,14 +62,14 @@ class SettingTest < Test::Unit::TestCase
     Setting.add :abc
     Setting.add :def
     Setting.add :ghi
-    assert_equal [:abc,:def,:ghi] , Setting.settings.sort
+    assert_equal [:abc,:def,:ghi] , Setting.settings.sort_by { |name| name.to_s }
   end
   
   verify 'get a list of settings and values' do
     Setting.add :abc , :default => 1
     Setting.add :def , :default => 2
     Setting.add :ghi , :default => 3
-    assert_equal [[:abc,1],[:def,2],[:ghi,3]] , Setting.settings_with_values.sort_by { |name,value| name }
+    assert_equal [[:abc,1],[:def,2],[:ghi,3]] , Setting.settings_with_values.sort_by { |name,value| name.to_s }
   end
   
   verify 'can specify that object should reload from db each time' do

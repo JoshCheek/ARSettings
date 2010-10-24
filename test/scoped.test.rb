@@ -126,14 +126,14 @@ class TestScoping < Test::Unit::TestCase
       s.add :abc
       s.add :def
       s.add :ghi
-      assert_equal [:abc,:def,:ghi] , s.settings.sort
+      assert_equal [:abc,:def,:ghi] , s.settings.sort_by { |name| name.to_s }
     end
       
     verify 'get a list of settings and values' do
       s.add :abc , :default => 1
       s.add :def , :default => 2
       s.add :ghi , :default => 3
-      assert_equal [[:abc,1],[:def,2],[:ghi,3]] , s.settings_with_values.sort_by { |name,value| name }
+      assert_equal [[:abc,1],[:def,2],[:ghi,3]] , s.settings_with_values.sort_by { |name,value| name.to_s }
     end
       
     verify 'can specify that object should reload from db each time' do
@@ -250,7 +250,7 @@ class TestScoping < Test::Unit::TestCase
       s.add :abcd , :default => 1
       s.add :efgh , :default => 2
       s.add :ijkl , :default => 3
-      assert_equal [:abcd,:efgh,:ijkl] , s.settings.sort 
+      assert_equal [:abcd,:efgh,:ijkl] , s.settings.sort_by { |setting| setting.to_s }
       assert_equal [[:abcd,1],[:efgh,2],[:ijkl,3]] , s.settings_with_values.sort_by { |setting,value| value }
     end
     
