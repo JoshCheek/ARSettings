@@ -42,4 +42,14 @@ class AddToArbitraryClass < Test::Unit::TestCase
     assert_equal 12 , C3.abcd
   end
   
+  verify 'can specify settings without specifying a settings class, then it defaults to ARSettings.default_class' do
+    ARSettings.create_settings_class :Setting13
+    ARSettings.default_class = Setting13
+    make_class(:C4) { has_setting :abcd }
+    C4.abcd = 12
+    assert_equal 1  , Setting13.count
+    assert_equal 12 , Setting13.first.value
+    ARSettings.default_class = Setting
+  end
+  
 end

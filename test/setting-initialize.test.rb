@@ -116,5 +116,12 @@ class InitializingSettingsClasses < Test::Unit::TestCase
     $sql_executor.silent_execute "insert into setting10s (name,value,scope,volatile) values ('abc','#{ARSettings.serialize(12)}','Setting10','f')"
     assert_raises(ARSettings::InvalidNameError) { ARSettings.create_settings_class :Setting10 , :max_chars => 2 }
   end
-    
+  
+  context 'ARSettings.default_class' do
+    verify 'ARSettings will set the new class to the default if no default exists' do
+      ARSettings.default_class = nil
+      ARSettings.create_settings_class :Setting14s
+      assert_equal Setting14s , ARSettings.default_class
+    end
+  end
 end

@@ -9,7 +9,7 @@ module ARSettings
   def self.create_settings_class( classname , options=Hash.new )
     raise AlreadyDefinedError.new("you are trying to define the settings class #{classname}, but it already exists") if Object.constants.map { |c| c.to_s }.include?(classname.to_s)
     Object.const_set classname , Class.new(ActiveRecord::Base)
-    Object.const_get(classname).class_eval do
+    klass = Object.const_get(classname).class_eval do
       extend  SettingsClass_ClassMethods
       include SettingsClass_InstanceMethods
       const_set :DEFAULT             , options.fetch( :default   , nil   )
@@ -18,11 +18,17 @@ module ARSettings
       send :load_from_db
       self
     end
+    @default_class ||= klass
+    klass
+  end
+  
+  class << self
+    attr_accessor :default_class
   end
   
   # can be used to put settings on any object
   def self.on( object , options = Hash.new )
-    settings_class = options.fetch :settings_class , Setting
+    settings_class = options.fetch :settings_class , default_class
     (class << object ; self ; end).send :define_method , :has_setting do |name|
       scope = settings_class.scope(object)
       scope.add name
