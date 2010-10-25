@@ -21,9 +21,10 @@ module ARSettings
   end
   
   # can be used to put settings on any object
-  def self.on(object)
-    def object.has_setting(name)
-      scope = Setting.scope(self.class)
+  def self.on( object , options = Hash.new )
+    settings_class = options.fetch :settings_class , Setting
+    (class << object ; self ; end).send :define_method , :has_setting do |name|
+      scope = settings_class.scope(object)
       scope.add name
       (class << self ; self ; end).instance_eval do
         getter = name

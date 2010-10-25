@@ -158,7 +158,7 @@ module ARSettings
       validate_name(name)
       add_setter(name)
       add_getter(name)
-      @settings[name.to_sym] = record
+      @settings[name] = record
       return record.value
     end
     
