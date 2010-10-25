@@ -7,6 +7,10 @@ class AddToArbitraryClass < Test::Unit::TestCase
     Setting.default = :the_default_value
   end
   
+  def teardown
+    ARSettings.default_class = Setting
+  end
+  
   def make_class(name,&block)
     self.class.const_set name , Class.new
     klass = self.class.const_get name
@@ -49,7 +53,11 @@ class AddToArbitraryClass < Test::Unit::TestCase
     C4.abcd = 12
     assert_equal 1  , Setting13.count
     assert_equal 12 , Setting13.first.value
-    ARSettings.default_class = Setting
+  end
+  
+  verify 'raises error if try to add settings without specifying a settings class or default' do
+    ARSettings.default_class = nil
+    assert_raises(ARSettings::NoDefaultScopeError) { make_class(:C5) { has_setting :abcd } }
   end
   
 end
