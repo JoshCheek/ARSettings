@@ -2,7 +2,7 @@ task :default => :test
 
 desc 'run the unit tests'
 task :test do
-  query = File.dirname(__FILE__) << '/test/*.test.rb'
+  query = File.dirname(__FILE__) << '/test/*_test.rb'
   Dir[query].each { |filename| require filename }
 end
 

@@ -1,5 +1,5 @@
 # db gets defined in the helper
-require File.expand_path( File.dirname(__FILE__) + "/../test/_in-memory-db" )
+require File.expand_path( File.dirname(__FILE__) + "/../test/_in_memory_db" )
 require File.expand_path( File.dirname(__FILE__) + "/../lib/arsettings" )
 
 # db starts off empty

@@ -1,6 +1,6 @@
 # require libs and gems
 require 'test/unit'
-require File.dirname(__FILE__) << "/_in-memory-db"
+require File.dirname(__FILE__) << "/_in_memory_db"
 
 ARSettings.create_settings_class 'Setting'
 
