@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/_helper'
 
-class TestScoping < Test::Unit::TestCase
+class ActiveRecordIntegration < Test::Unit::TestCase
   
   def setup
     ARSettings.default_class = Setting
@@ -100,7 +100,7 @@ end
 # and additional ones as necessary
 ActiveRecord::Schema.define do
   suppress_messages do
-    TestScoping.instance_methods.grep(/^test/).size.next.times do |i|
+    ActiveRecordIntegration.instance_methods.grep(/^test/).size.next.times do |i|
       create_table "model#{i+1}s" do |t|
         t.string  :name     , :null => false , :size => 30
         t.text    :value
