@@ -47,6 +47,7 @@ ActiveRecord::Schema.define do
     :setting13s                       ,
     :setting14s                       ,
     :setting15s                       ,
+    :setting16s                       ,
     :volatile_tests                   ,
     :this_should_be_returneds         ,
   ].flatten.each do |tablename|
