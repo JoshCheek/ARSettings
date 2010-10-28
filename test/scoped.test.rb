@@ -155,16 +155,30 @@ class TestScoping < Test::Unit::TestCase
       s.abcd = "3"
       assert_equal 3 , s.abcd
     end
-      
-    verify 'readding the setting allows you to update volatility and postprocessing' do
+    
+    verify 'readding the setting allows you to update volatility' do
       s.add( :abcd , :default => "12.5" , :volatile => false ) { |val| val.to_f }
       assert_equal 12.5 , s.abcd
       $sql_executor.silent_execute "update settings set value='#{ARSettings.serialize(5.5)}' where name='abcd'"
       assert_equal 12.5 , s.abcd
       s.add :abcd , :volatile => true
       assert_equal 5.5 , s.abcd
-      s.add( :abcd , :volatile => true ) { |val| val.to_i }
-      assert_equal 5 , s.abcd
+    end
+
+    verify 'postprocessing only occurs when inserting the data' do
+      s.add( :abcd , :default => "12.5" , :volatile => false ) { |val| val.to_f }
+      assert_equal 12.5 , s.abcd
+      s.add( :abcd ) { |val| val.to_i }    
+      assert_equal 12.5 , s.abcd
+    end
+
+    verify 'readding the setting allows you to update postprocessing' do
+      s.add( :abcd , :default => 0 ) { |val| val.to_f }
+      s.abcd = "12.5"
+      assert_equal 12.5 , s.abcd
+      s.add( :abcd ) { |val| val.to_i }
+      s.abcd = "12.5"
+      assert_equal 12 , s.abcd
     end
       
     verify 'defaults get run through the postprocessor' do
@@ -264,7 +278,7 @@ class TestScoping < Test::Unit::TestCase
       assert_equal :Hash , Setting.first.scope
       assert_equal 2 , hash.abcd
     end
-    
+
   end
   
   

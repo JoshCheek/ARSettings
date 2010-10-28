@@ -92,15 +92,29 @@ class SettingTest < Test::Unit::TestCase
     assert_equal 3 , Setting.abcd
   end
   
-  verify 'readding the setting allows you to update volatility and postprocessing' do
+  verify 'readding the setting allows you to update volatility' do
     Setting.add( :abcd , :default => "12.5" , :volatile => false ) { |val| val.to_f }
     assert_equal 12.5 , Setting.abcd
     $sql_executor.silent_execute "update settings set value='#{ARSettings.serialize(5.5)}' where name='abcd'"
     assert_equal 12.5 , Setting.abcd
     Setting.add :abcd , :volatile => true
     assert_equal 5.5 , Setting.abcd
-    Setting.add( :abcd , :volatile => true ) { |val| val.to_i }
-    assert_equal 5 , Setting.abcd
+  end
+  
+  verify 'postprocessing only occurs when inserting the data' do
+    Setting.add( :abcd , :default => "12.5" , :volatile => false ) { |val| val.to_f }
+    assert_equal 12.5 , Setting.abcd
+    Setting.add( :abcd ) { |val| val.to_i }    
+    assert_equal 12.5 , Setting.abcd
+  end
+  
+  verify 'readding the setting allows you to update postprocessing' do
+    Setting.add( :abcd , :default => 0 ) { |val| val.to_f }
+    Setting.abcd = "12.5"
+    assert_equal 12.5 , Setting.abcd
+    Setting.add( :abcd ) { |val| val.to_i }
+    Setting.abcd = "12.5"
+    assert_equal 12 , Setting.abcd
   end
   
   verify 'defaults get run through the postprocessor' do

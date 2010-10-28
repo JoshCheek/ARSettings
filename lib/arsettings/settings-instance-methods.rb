@@ -21,7 +21,6 @@ module ARSettings
         reload
         @value_is_deserialized = true
         @deserialized_value = ARSettings.deserialize(super)
-        @deserialized_value = postprocessing[@deserialized_value] if volatile
         @deserialized_value
       end
     end

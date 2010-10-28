@@ -84,15 +84,12 @@ class AddToArbitraryClass < Test::Unit::TestCase
     assert_equal 14.0.class           ,  C6.efgh.class
     assert_equal '14'                 ,  C6.ijkl
     assert_equal '14'.class           ,  C6.ijkl.class
-    $sql_executor.silent_execute "update setting15s set value='#{ARSettings.serialize(200.0)}' where name='abcd'"
+    $sql_executor.silent_execute "update setting15s set value='#{ARSettings.serialize(200)  }' where name='abcd'"
     $sql_executor.silent_execute "update setting15s set value='#{ARSettings.serialize(200.0)}' where name='efgh'"
     $sql_executor.silent_execute "update setting15s set value='#{ARSettings.serialize(200.0)}' where name='ijkl'"
     assert_equal 200                  ,  C6.abcd
-    assert_equal 200.class            ,  C6.abcd.class
     assert_equal 14.0                 ,  C6.efgh
-    assert_equal 14.0.class           ,  C6.efgh.class
     assert_equal '14'                 ,  C6.ijkl
-    assert_equal '14'.class           ,  C6.ijkl.class
   end
   
   verify 'two classes dont see eachothers settings' do
