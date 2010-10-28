@@ -21,21 +21,10 @@ Dependencies
 TODO
 ====
 
-Should allow scoping of settings under other classes, should be able to add defaults to those classes like
-    
-    class MyClass < ActiveRecord::Base
-      has_settings :max_connections => { :default => 5 , :type => :int }
-    end
-
-Which can then be accessed like
-
-    MyClass.max_connections # => 5
-    MyClass.max_connections = 12
-    MyClass.max_connections # => 12
-
-Should accept an optional first argument that allows it to only read/write from db when it knows there is a change, rather than reading and writing from db each time.
-
-Gemify it maybe? :)
+* when creating a new setting, don't have a default value. instead, just wait to save it until it gets set for the first time
+* add boolean awareness
+* add AR::B the ability to specify whether it goes on the ivar or not (defaulting to not)
+* Gemify it maybe? :)
 
 ---------------------------------------
 
