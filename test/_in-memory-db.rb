@@ -22,7 +22,7 @@ $stdout = StringIO.new
 define_as_settings_class = lambda do |t|
   t.string  :name     , :null => false , :size => 30
   t.text    :value
-  t.text    :scope
+  t.text    :package
   t.boolean :volatile , :default => false
   t.timestamps
 end

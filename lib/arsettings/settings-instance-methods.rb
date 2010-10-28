@@ -30,8 +30,12 @@ module ARSettings
       save
     end
         
-    def scope
-      @scope ||= super.to_sym
+    def package
+      @package ||= super.to_sym
+    end
+    
+    def package=(pkg)
+      super pkg.to_s
     end
     
   end

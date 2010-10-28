@@ -20,7 +20,7 @@ class ActiveRecordIntegration < Test::Unit::TestCase
   end
 
   verify 'settings are loaded from the db, if they exist in the db' do
-    $sql_executor.silent_execute "insert into settings (name,value,scope,volatile) values ('abcd','#{ARSettings.serialize(12)}','#{@klass.name}','f')"
+    $sql_executor.silent_execute "insert into settings (name,value,package,volatile) values ('abcd','#{ARSettings.serialize(12)}','#{@klass.name}','f')"
     Setting.send :load_from_db # to simulate initial conditions
     @klass.class_eval { has_setting :abcd }
     assert_equal 12 , @klass.abcd

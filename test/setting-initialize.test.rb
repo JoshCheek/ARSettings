@@ -24,47 +24,47 @@ class InitializingSettingsClasses < Test::Unit::TestCase
     assert_equal 123 , Setting3.default
   end
   
-  verify 'setting default on scope causes it to override its settings_class default' do
+  verify 'setting default on package causes it to override its settings_class default' do
     ARSettings.create_settings_class 'Setting7' , :default => 123
     assert_equal 123 , Setting7.default
-    assert_equal 123 , Setting7.scope(String).default
+    assert_equal 123 , Setting7.package(String).default
     Setting7.reset_all
     assert_equal 123 , Setting7.default
-    assert_equal 123 , Setting7.scope(String).default
-    Setting7.scope(String).default = 456
+    assert_equal 123 , Setting7.package(String).default
+    Setting7.package(String).default = 456
     assert_equal 123 , Setting7.default
-    assert_equal 456 , Setting7.scope(String).default
+    assert_equal 456 , Setting7.package(String).default
   end
   
-  verify 'resetting a scope will reset its default' do
+  verify 'resetting a package will reset its default' do
     ARSettings.create_settings_class 'Setting8' , :default => 123
-    Setting8.scope(String).default = 987
-    assert_equal 987 , Setting8.scope(String).default
+    Setting8.package(String).default = 987
+    assert_equal 987 , Setting8.package(String).default
     Setting8.reset_all
-    assert_equal 123 , Setting8.scope(String).default
+    assert_equal 123 , Setting8.package(String).default
   end
   
-  verify "setting one scopes default doesn't affect another scope" do
+  verify "setting one packages default doesn't affect another package" do
     ARSettings.create_settings_class 'Setting9' , :default => 123
-    Setting9.scope(String).default = 1
-    Setting9.scope(Hash).default = 2
-    assert_equal 1 , Setting9.scope(String).default
-    assert_equal 2 , Setting9.scope(Hash).default
-    Setting9.scope(String).reset
-    assert_equal 123 , Setting9.scope(String).default
-    assert_equal 2   , Setting9.scope(Hash).default
+    Setting9.package(String).default = 1
+    Setting9.package(Hash).default = 2
+    assert_equal 1 , Setting9.package(String).default
+    assert_equal 2 , Setting9.package(Hash).default
+    Setting9.package(String).reset
+    assert_equal 123 , Setting9.package(String).default
+    assert_equal 2   , Setting9.package(Hash).default
   end
   
   verify 'loads up values previously stored in the db' do
-    $sql_executor.silent_execute "insert into predefined_values (name,value,scope,volatile) values ('predefined_value','#{ARSettings.serialize(12)}','PredefinedValues','f')"
-    $sql_executor.silent_execute "insert into predefined_values (name,value,scope,volatile) values ('predefined_value','#{ARSettings.serialize(13)}','String','f')"
+    $sql_executor.silent_execute "insert into predefined_values (name,value,package,volatile) values ('predefined_value','#{ARSettings.serialize(12)}','PredefinedValues','f')"
+    $sql_executor.silent_execute "insert into predefined_values (name,value,package,volatile) values ('predefined_value','#{ARSettings.serialize(13)}','String','f')"
     ARSettings.create_settings_class :PredefinedValues
     # make sure it loads the value
     assert_equal 2 , PredefinedValues.count
-    assert PredefinedValues.scope(PredefinedValues).setting?(:predefined_value)
-    assert PredefinedValues.scope(String).setting?(:predefined_value)
+    assert PredefinedValues.package(PredefinedValues).setting?(:predefined_value)
+    assert PredefinedValues.package(String).setting?(:predefined_value)
     assert_equal 12 , PredefinedValues.predefined_value
-    assert_equal 13 , PredefinedValues.scope(String).predefined_value
+    assert_equal 13 , PredefinedValues.package(String).predefined_value
     PredefinedValues.add :predefined_value , :default => 20
     assert_equal 12 , PredefinedValues.predefined_value
   end
@@ -113,7 +113,7 @@ class InitializingSettingsClasses < Test::Unit::TestCase
   end
 
   verify 'raises errors if values loaded from the db violate maxlength' do
-    $sql_executor.silent_execute "insert into setting10s (name,value,scope,volatile) values ('abc','#{ARSettings.serialize(12)}','Setting10','f')"
+    $sql_executor.silent_execute "insert into setting10s (name,value,package,volatile) values ('abc','#{ARSettings.serialize(12)}','Setting10','f')"
     assert_raises(ARSettings::InvalidNameError) { ARSettings.create_settings_class :Setting10 , :max_chars => 2 }
   end
   

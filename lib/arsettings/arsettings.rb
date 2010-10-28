@@ -3,8 +3,8 @@ module ARSettings
   AlreadyDefinedError = Class.new(Exception)
   NoSuchSettingError  = Class.new(Exception)
   InvalidNameError    = Class.new(Exception)
-  InvalidScopeError   = Class.new(Exception)
-  NoDefaultScopeError = Class.new(Exception)
+  InvalidPackageError   = Class.new(Exception)
+  NoDefaultPackageError = Class.new(Exception)
   
   # create the settings class
   def self.create_settings_class( classname , options=Hash.new )
@@ -30,15 +30,15 @@ module ARSettings
   # can be used to put settings on any object
   def self.on( object , options = Hash.new )
     settings_class = options.fetch :settings_class , default_class
-    raise NoDefaultScopeError.new("You did not specify a settings class, and no default is set (make sure you have already invoked create_settings_class)") unless settings_class
+    raise NoDefaultPackageError.new("You did not specify a settings class, and no default is set (make sure you have already invoked create_settings_class)") unless settings_class
     (class << object ; self ; end).send :define_method , :has_setting do |name,options={},&block|
-      scope = settings_class.scope(object)
-      scope.add name , options , &block
+      package = settings_class.package(object)
+      package.add name , options , &block
       (class << self ; self ; end).instance_eval do
         getter = name
         setter = "#{name}="
-        define_method getter do       scope.send getter       end
-        define_method setter do |arg| scope.send setter , arg end
+        define_method getter do       package.send getter       end
+        define_method setter do |arg| package.send setter , arg end
       end
     end
   end

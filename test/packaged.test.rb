@@ -1,60 +1,60 @@
 require File.dirname(__FILE__) + '/_helper'
 
-class TestScoping < Test::Unit::TestCase
+class TestPackaging < Test::Unit::TestCase
   
   def setup
     Setting.reset_all
-    Setting.scope(String).default = :the_default_value
+    Setting.package(String).default = :the_default_value
   end
   
   
   context 'singleton' do
     
-    scoped = ARSettings::Scoped
+    packaged = ARSettings::Packaged
     
     verify 'cannot instantiate on your own' do
-      assert_raises(NoMethodError) { ARSettings::Scoped.new Setting , String }
+      assert_raises(NoMethodError) { ARSettings::Packaged.new Setting , String }
     end
     
-    verify 'has_instance? returns whether it has instantiated a given scope' do
+    verify 'has_instance? returns whether it has instantiated a given package' do
       MyClass1 = Class.new
-      assert !scoped.has_instance?(Setting,MyClass1)
-      scoped.instance Setting , MyClass1
-      assert scoped.has_instance?(Setting,MyClass1)
+      assert !packaged.has_instance?(Setting,MyClass1)
+      packaged.instance Setting , MyClass1
+      assert packaged.has_instance?(Setting,MyClass1)
     end
     
     verify 'instance returns the same result' do
-      scoped.instance(Setting,String)
-      scoped.instance(Setting,String)
+      packaged.instance(Setting,String)
+      packaged.instance(Setting,String)
     end
     
-    verify '#instance returns an instance of Scoped' do
+    verify '#instance returns an instance of Packaged' do
       MyClass2 = Class.new
-      assert_equal scoped , scoped.instance(Setting , MyClass2).class
-      assert_equal scoped , scoped.instance(Setting , String).class
+      assert_equal packaged , packaged.instance(Setting , MyClass2).class
+      assert_equal packaged , packaged.instance(Setting , String).class
     end
     
-    verify 'it raises an error if given a scope that is not a string / symbol / class' do
-      assert_raises(ARSettings::InvalidScopeError) { scoped.instance(Setting,/whoops!/) }
-      assert_nothing_raised { scoped.instance(Setting,'string')  }
-      assert_nothing_raised { scoped.instance(Setting,:symbol)   }
-      assert_nothing_raised { scoped.instance(Setting,Class)     }
+    verify 'it raises an error if given a package that is not a string / symbol / class' do
+      assert_raises(ARSettings::InvalidPackageError) { packaged.instance(Setting,/whoops!/) }
+      assert_nothing_raised { packaged.instance(Setting,'string')  }
+      assert_nothing_raised { packaged.instance(Setting,:symbol)   }
+      assert_nothing_raised { packaged.instance(Setting,Class)     }
     end
     
     verify 'it considers strings, symbols, and classes to symbols' do
-      assert_equal :cLaSs  , scoped.instance(Setting,'cLaSs').scope
-      assert_equal :Symbol , scoped.instance(Setting,:Symbol).scope
-      assert_equal :Symbol , scoped.instance(Setting,Symbol).scope
+      assert_equal :cLaSs  , packaged.instance(Setting,'cLaSs').package
+      assert_equal :Symbol , packaged.instance(Setting,:Symbol).package
+      assert_equal :Symbol , packaged.instance(Setting,Symbol).package
     end
     
     verify 'raises error if settings_class is not a settings class' do
-      assert_raises(scoped::InvalidSettingsClassError) { scoped.instance(String,String) }
+      assert_raises(packaged::InvalidSettingsClassError) { packaged.instance(String,String) }
     end
   
-    verify 'returns the same scope regardless of how it is requested' do
-      id = Setting.scope(Setting).object_id
-      assert_equal id , Setting.scope(:Setting).object_id
-      assert_equal id , Setting.scope('Setting').object_id
+    verify 'returns the same package regardless of how it is requested' do
+      id = Setting.package(Setting).object_id
+      assert_equal id , Setting.package(:Setting).object_id
+      assert_equal id , Setting.package('Setting').object_id
     end
     
   end
@@ -65,7 +65,7 @@ class TestScoping < Test::Unit::TestCase
   
   context 'settings behaviour' do
   
-    s = Setting.scope(String)
+    s = Setting.package(String)
   
     verify 'can query whether a setting exists with setting?, and can declare settings with add' do
       assert !s.setting?(:a)
@@ -206,53 +206,53 @@ class TestScoping < Test::Unit::TestCase
 
   context 'initializations' do
     
-    s = Setting.scope(String)
-    scoped = ARSettings::Scoped
+    s = Setting.package(String)
+    packaged = ARSettings::Packaged
     
-    verify 'it raises an error if given a scope that is not string / symbol / class' do
-      assert_nothing_raised { Setting.scope "string" }
-      assert_nothing_raised { Setting.scope :Symbol  }
-      assert_nothing_raised { Setting.scope Class    }
-      assert_raises(ARSettings::InvalidScopeError) { Setting.scope 1 }
-      assert_raises(ARSettings::InvalidScopeError) { Setting.scope Object.new }
-      assert_raises(ARSettings::InvalidScopeError) { Setting.scope(SomeConstant=Object.new) }
+    verify 'it raises an error if given a package that is not string / symbol / class' do
+      assert_nothing_raised { Setting.package "string" }
+      assert_nothing_raised { Setting.package :Symbol  }
+      assert_nothing_raised { Setting.package Class    }
+      assert_raises(ARSettings::InvalidPackageError) { Setting.package 1 }
+      assert_raises(ARSettings::InvalidPackageError) { Setting.package Object.new }
+      assert_raises(ARSettings::InvalidPackageError) { Setting.package(SomeConstant=Object.new) }
     end
     
-    verify 'can add a scope as an option' do
-      Setting.add :abcd , :scope => Hash , :default => 12
-      assert_equal 12 , Setting.scope(Hash).abcd
+    verify 'can add a package as an option' do
+      Setting.add :abcd , :package => Hash , :default => 12
+      assert_equal 12 , Setting.package(Hash).abcd
       assert_raises(ARSettings::NoSuchSettingError) { Setting.abcd }
     end
     
-    verify 'can scope settings with classes' do
-      Setting.add :abcd , :scope => String , :default => 12
+    verify 'can package settings with classes' do
+      Setting.add :abcd , :package => String , :default => 12
       assert_equal 12 , s.abcd
-      assert_equal :String , Setting.find( :first , :conditions => { :name => 'abcd' } ).scope
+      assert_equal :String , Setting.find( :first , :conditions => { :name => 'abcd' } ).package
     end
   
-    verify 'Setting.scope(scope) returns a ScopedSetting object' do
-      assert_equal ARSettings::Scoped , Setting.scope(String).class
+    verify 'Setting.package(package) returns a PackagedSetting object' do
+      assert_equal ARSettings::Packaged , Setting.package(String).class
     end
   
-    verify 'scoped knows its settings class' do
-      assert_equal Setting , Setting.scope(String).settings_class
+    verify 'packaged knows its settings class' do
+      assert_equal Setting , Setting.package(String).settings_class
     end
   
-    verify 'current_scope returns the current scope' do
-      assert_equal :String , Setting.scope(String).scope
-      assert_equal :string , Setting.scope('string').scope
-      assert_equal :strIng , Setting.scope(:strIng).scope
+    verify 'current_package returns the current package' do
+      assert_equal :String , Setting.package(String).package
+      assert_equal :string , Setting.package('string').package
+      assert_equal :strIng , Setting.package(:strIng).package
     end
     
   
-    verify 'can add and remove variables within a given scope' do
+    verify 'can add and remove variables within a given package' do
       s.add :abcd , :default => 12
       assert_equal 12 , s.abcd
       s.abcd = 5
       assert_equal 5 , s.abcd
     end
   
-    verify 'raises NoSuchSettingError when given incorrect scope' do
+    verify 'raises NoSuchSettingError when given incorrect package' do
       s.add :abcd , :default => 12
       assert_raises(ARSettings::NoSuchSettingError) { Setting.abcd }
       assert_raises(ARSettings::NoSuchSettingError) { Setting.abcd = 3 }
@@ -260,7 +260,7 @@ class TestScoping < Test::Unit::TestCase
       assert_nothing_raised { s.abcd = 5 }
     end
   
-    verify 'scoped settings can list all settings and values' do
+    verify 'packaged settings can list all settings and values' do
       s.add :abcd , :default => 1
       s.add :efgh , :default => 2
       s.add :ijkl , :default => 3
@@ -268,14 +268,14 @@ class TestScoping < Test::Unit::TestCase
       assert_equal [[:abcd,1],[:efgh,2],[:ijkl,3]] , s.settings_with_values.sort_by { |setting,value| value }
     end
     
-    verify 'reset only applies to settings of a given scope' do
-      string = Setting.scope(String)
-      hash   = Setting.scope(Hash)
+    verify 'reset only applies to settings of a given package' do
+      string = Setting.package(String)
+      hash   = Setting.package(Hash)
       string.add :abcd , :default => 1
       hash.add :abcd   , :default => 2
       string.reset
       assert_equal 1 , Setting.count
-      assert_equal :Hash , Setting.first.scope
+      assert_equal :Hash , Setting.first.package
       assert_equal 2 , hash.abcd
     end
 

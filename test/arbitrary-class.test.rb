@@ -40,7 +40,7 @@ class AddToArbitraryClass < Test::Unit::TestCase
   end
   
   verify 'settings are loaded from the db, if they exist in the db' do
-    $sql_executor.silent_execute "insert into settings (name,value,scope,volatile) values ('abcd','#{ARSettings.serialize(12)}','AddToArbitraryClass::C3','f')"
+    $sql_executor.silent_execute "insert into settings (name,value,package,volatile) values ('abcd','#{ARSettings.serialize(12)}','AddToArbitraryClass::C3','f')"
     Setting.send :load_from_db # to simulate initial conditions
     make_class(:C3) { has_setting :abcd }
     assert_equal 12 , C3.abcd
@@ -57,7 +57,7 @@ class AddToArbitraryClass < Test::Unit::TestCase
   
   verify 'raises error if try to add settings without specifying a settings class or default' do
     ARSettings.default_class = nil
-    assert_raises(ARSettings::NoDefaultScopeError) { make_class(:C5) { has_setting :abcd } }
+    assert_raises(ARSettings::NoDefaultPackageError) { make_class(:C5) { has_setting :abcd } }
   end
   
   verify 'can pass all the same args that Setting.add can take' do

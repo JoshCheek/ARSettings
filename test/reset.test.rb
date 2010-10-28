@@ -3,11 +3,11 @@ require File.dirname(__FILE__) + '/_helper'
 class ResetTest < Test::Unit::TestCase
   
   def setup
-    Setting.scope(String).reset
-    Setting.scope(String).add :abc
+    Setting.package(String).reset
+    Setting.package(String).add :abc
   end
   
-  s = Setting.scope(String)
+  s = Setting.package(String)
   
   verify 'resets respond_to?' do
     assert s.respond_to?(:abc)
@@ -44,27 +44,27 @@ class ResetTest < Test::Unit::TestCase
     assert_equal nil , s.default
   end
   
-  verify 'can reset all scopes' do
+  verify 'can reset all packages' do
     Setting.reset_all
-    Setting.scope(String).add :abcd
-    Setting.scope(Hash).add :efgh
+    Setting.package(String).add :abcd
+    Setting.package(Hash).add :efgh
     assert_equal 2 , Setting.count
     Setting.reset_all
     assert_equal 0 , Setting.count
   end
   
-  verify "resetting one settings class' scope doesn't impact others" do
+  verify "resetting one settings class' package doesn't impact others" do
     ARSettings.create_settings_class 'Setting6'
-    Setting6.scope(String).add :abc
-    Setting6.scope(Hash).add :def
-    Setting.scope(:ghi).add :jkl
+    Setting6.package(String).add :abc
+    Setting6.package(Hash).add :def
+    Setting.package(:ghi).add :jkl
     assert_equal 2 , Setting6.count
     assert_equal 2 , Setting.count
     Setting.reset_all
     assert_equal 2 , Setting6.count
     assert_equal 0 , Setting.count
-    Setting.scope(:ghi).add :mno
-    Setting.scope(:ghi).add :pqr
+    Setting.package(:ghi).add :mno
+    Setting.package(:ghi).add :pqr
     Setting6.reset_all
     assert_equal 0 , Setting6.count
     assert_equal 2 , Setting.count

@@ -140,8 +140,8 @@ class SettingTest < Test::Unit::TestCase
   
   verify 'add returns the value of the setting' do
     assert_equal 100 , Setting.add( :a , :default => 100)
-    assert_equal 101 , Setting.scope(String).add( :b , :default => 101)
-    assert_equal 101 , Setting.scope(String).add( :b , :default => 102)
+    assert_equal 101 , Setting.package(String).add( :b , :default => 101)
+    assert_equal 101 , Setting.package(String).add( :b , :default => 102)
   end
   
 end

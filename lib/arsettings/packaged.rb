@@ -1,33 +1,33 @@
 module ARSettings 
-  class Scoped
+  class Packaged
     
     InvalidSettingsClassError = Class.new Exception
     PASSTHROUGH = lambda { |val| val }
     
-    attr_reader :scope , :settings_class
+    attr_reader :package , :settings_class
     
     private_class_method :new
         
-    def self.instance(settings_class,scope)
-      validate(settings_class,scope)
-      scope = normalize scope
+    def self.instance(settings_class,package)
+      validate(settings_class,package)
+      package = normalize package
       @instances ||= Hash.new
       @instances[settings_class] ||= Hash.new
-      @instances[settings_class][scope] ||= new(settings_class,scope)
+      @instances[settings_class][package] ||= new(settings_class,package)
     end
     
-    def self.has_instance?(settings_class,scope)
-      @instances && @instances[settings_class] && @instances[settings_class][normalize scope]
+    def self.has_instance?(settings_class,package)
+      @instances && @instances[settings_class] && @instances[settings_class][normalize package]
     end
     
-    def self.validate(settings_class,scope)
-      validate_scope(scope)
+    def self.validate(settings_class,package)
+      validate_package(package)
       validate_settings_class(settings_class)
     end
     
-    def self.validate_scope(scope)
-      raise ARSettings::InvalidScopeError.new("#{scope.inspect} should be a String/Symbol/Class") unless 
-          String === scope || Symbol === scope || Class === scope
+    def self.validate_package(package)
+      raise ARSettings::InvalidPackageError.new("#{package.inspect} should be a String/Symbol/Class") unless 
+          String === package || Symbol === package || Class === package
     end
     
     def self.validate_settings_class(settings_class)
@@ -40,16 +40,16 @@ module ARSettings
       @instances[settings_class] || Hash.new
     end
     
-    def self.normalize(scope)
-      return scope if Symbol === scope
-      scope.to_s.to_sym
+    def self.normalize(package)
+      return package if Symbol === package
+      package.to_s.to_sym
     end
    
    
     # instance methods
         
-    def initialize(settings_class,scope)
-      @scope , @settings_class , @settings = scope.to_s.to_sym , settings_class , Hash.new
+    def initialize(settings_class,package)
+      @package , @settings_class , @settings = package.to_s.to_sym , settings_class , Hash.new
     end    
     
     def reset
@@ -79,7 +79,7 @@ module ARSettings
       else
         add_setter(name)
         add_getter(name)
-        @settings[name] = settings_class.new :name => name.to_s , :postprocessing => proc || PASSTHROUGH , :volatile => !!options.fetch(:volatile,settings_class::VOLATILIE_DEFAULT) , :scope => scope
+        @settings[name] = settings_class.new :name => name.to_s , :postprocessing => proc || PASSTHROUGH , :volatile => !!options.fetch(:volatile,settings_class::VOLATILIE_DEFAULT) , :package => package
         send "#{name}=" , options.fetch(:default,default)
       end
     end
