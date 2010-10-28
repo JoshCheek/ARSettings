@@ -31,9 +31,9 @@ module ARSettings
   def self.on( object , options = Hash.new )
     settings_class = options.fetch :settings_class , default_class
     raise NoDefaultScopeError.new("You did not specify a settings class, and no default is set (make sure you have already invoked create_settings_class)") unless settings_class
-    (class << object ; self ; end).send :define_method , :has_setting do |name|
+    (class << object ; self ; end).send :define_method , :has_setting do |name,options={},&block|
       scope = settings_class.scope(object)
-      scope.add name
+      scope.add name , options , &block
       (class << self ; self ; end).instance_eval do
         getter = name
         setter = "#{name}="

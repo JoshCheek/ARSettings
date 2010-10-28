@@ -60,4 +60,49 @@ class AddToArbitraryClass < Test::Unit::TestCase
     assert_raises(ARSettings::NoDefaultScopeError) { make_class(:C5) { has_setting :abcd } }
   end
   
+  verify 'can pass all the same args that Setting.add can take' do
+    ARSettings.default_class = nil
+    ARSettings.create_settings_class :Setting15
+    make_class :C6 do
+      has_setting :abcd , :default => 12 , :volatile => true do |val|
+        val.to_i
+      end
+      has_setting :efgh , :default => 13.0 , :volatile => false do |val|
+        val.to_f
+      end
+      has_setting :ijkl
+    end
+    assert_equal 12                   ,  C6.abcd
+    assert_equal 12.class             ,  C6.abcd.class
+    assert_equal 13.0                 ,  C6.efgh
+    assert_equal 13.0.class           ,  C6.efgh.class
+    assert_equal Setting15::DEFAULT   ,  C6.ijkl
+    C6.abcd = C6.efgh = C6.ijkl = '14'
+    assert_equal 14                   ,  C6.abcd
+    assert_equal 14.class             ,  C6.abcd.class
+    assert_equal 14.0                 ,  C6.efgh
+    assert_equal 14.0.class           ,  C6.efgh.class
+    assert_equal '14'                 ,  C6.ijkl
+    assert_equal '14'.class           ,  C6.ijkl.class
+    $sql_executor.silent_execute "update setting15s set value='#{ARSettings.serialize(200.0)}' where name='abcd'"
+    $sql_executor.silent_execute "update setting15s set value='#{ARSettings.serialize(200.0)}' where name='efgh'"
+    $sql_executor.silent_execute "update setting15s set value='#{ARSettings.serialize(200.0)}' where name='ijkl'"
+    assert_equal 200                  ,  C6.abcd
+    assert_equal 200.class            ,  C6.abcd.class
+    assert_equal 14.0                 ,  C6.efgh
+    assert_equal 14.0.class           ,  C6.efgh.class
+    assert_equal '14'                 ,  C6.ijkl
+    assert_equal '14'.class           ,  C6.ijkl.class
+  end
+  
+  verify 'two classes dont see eachothers settings' do
+    make_class(:C7) { has_setting :abcd }
+    make_class(:C8) { has_setting :abcd }
+    C7.abcd = 5
+    C8.abcd = 6
+    assert_equal 5 , C7.abcd
+    assert_equal 6 , C8.abcd
+  end
 end
+
+    
