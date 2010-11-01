@@ -4,7 +4,6 @@ class AddToArbitraryClass < Test::Unit::TestCase
       
   def setup
     Setting.reset_all
-    Setting.default = :the_default_value
   end
   
   def teardown
@@ -76,7 +75,6 @@ class AddToArbitraryClass < Test::Unit::TestCase
     assert_equal 12.class             ,  C6.abcd.class
     assert_equal 13.0                 ,  C6.efgh
     assert_equal 13.0.class           ,  C6.efgh.class
-    assert_equal Setting15::DEFAULT   ,  C6.ijkl
     C6.abcd = C6.efgh = C6.ijkl = '14'
     assert_equal 14                   ,  C6.abcd
     assert_equal 14.class             ,  C6.abcd.class

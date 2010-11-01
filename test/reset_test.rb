@@ -18,7 +18,6 @@ class ResetTest < Test::Unit::TestCase
   end
   
   verify 'resets method' do
-    assert_nothing_raised { s.abc     }
     assert_nothing_raised { s.abc = 1 }
     s.reset
     assert_raises(ARSettings::NoSuchSettingError) { s.abc     }
@@ -35,13 +34,6 @@ class ResetTest < Test::Unit::TestCase
     assert_count 1
     s.reset
     assert_count 0
-  end
-
-  verify 'resets default' do
-    s.default = 12
-    assert_equal 12 , s.default
-    s.reset
-    assert_equal nil , s.default
   end
   
   verify 'can reset all packages' do

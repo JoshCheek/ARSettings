@@ -4,7 +4,6 @@ class TestPackaging < Test::Unit::TestCase
   
   def setup
     Setting.reset_all
-    Setting.package(String).default = :the_default_value
   end
   
   
@@ -73,16 +72,11 @@ class TestPackaging < Test::Unit::TestCase
       assert s.setting?(:a)
     end
     
-    verify "add returns the setting's value" do
-      assert_equal 1 , s.add( :xyz , :default => 1)
-      assert_equal 1 , s.add( :xyz , :default => 2)
+    verify "add returns the package the setting was added to" do
+      assert_equal s , s.add( :xyz , :default => 1)
+      assert_equal s , s.add( :xyz , :default => 2)
     end
-  
-    verify 'defaults to Setting.default if no default is given' do
-      s.add :a
-      assert_equal :the_default_value , s.a
-    end
-      
+        
     verify 'can add default when creating' do
       s.add :a , :default => 123
       assert_equal 123 , s.a

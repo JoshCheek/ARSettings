@@ -12,49 +12,7 @@ class InitializingSettingsClasses < Test::Unit::TestCase
     assert_nothing_raised { ARSettings.create_settings_class 'Setting2' }
     assert_raises(ARSettings::AlreadyDefinedError) { ARSettings.create_settings_class 'Setting2' }
   end
-  
-  verify 'can set default when initializing' do
-    ARSettings.create_settings_class 'Setting3' , :default => 123
-    assert_equal 123 , Setting3.default
-    Setting3.reset_all
-    assert_equal 123 , Setting3.default
-    Setting3.default = 456
-    assert_equal 456 , Setting3.default
-    Setting3.reset_all
-    assert_equal 123 , Setting3.default
-  end
-  
-  verify 'setting default on package causes it to override its settings_class default' do
-    ARSettings.create_settings_class 'Setting7' , :default => 123
-    assert_equal 123 , Setting7.default
-    assert_equal 123 , Setting7.package(String).default
-    Setting7.reset_all
-    assert_equal 123 , Setting7.default
-    assert_equal 123 , Setting7.package(String).default
-    Setting7.package(String).default = 456
-    assert_equal 123 , Setting7.default
-    assert_equal 456 , Setting7.package(String).default
-  end
-  
-  verify 'resetting a package will reset its default' do
-    ARSettings.create_settings_class 'Setting8' , :default => 123
-    Setting8.package(String).default = 987
-    assert_equal 987 , Setting8.package(String).default
-    Setting8.reset_all
-    assert_equal 123 , Setting8.package(String).default
-  end
-  
-  verify "setting one packages default doesn't affect another package" do
-    ARSettings.create_settings_class 'Setting9' , :default => 123
-    Setting9.package(String).default = 1
-    Setting9.package(Hash).default = 2
-    assert_equal 1 , Setting9.package(String).default
-    assert_equal 2 , Setting9.package(Hash).default
-    Setting9.package(String).reset
-    assert_equal 123 , Setting9.package(String).default
-    assert_equal 2   , Setting9.package(Hash).default
-  end
-  
+          
   verify 'loads up values previously stored in the db' do
     $sql_executor.silent_execute "insert into predefined_values (name,value,package,volatile) values ('predefined_value','#{ARSettings.serialize(12)}','PredefinedValues','f')"
     $sql_executor.silent_execute "insert into predefined_values (name,value,package,volatile) values ('predefined_value','#{ARSettings.serialize(13)}','String','f')"

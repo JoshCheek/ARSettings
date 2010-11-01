@@ -49,7 +49,6 @@ class ActiveRecordIntegration < Test::Unit::TestCase
     assert_equal 12.class             ,  @klass.abcd.class
     assert_equal 13.0                 ,  @klass.efgh
     assert_equal 13.0.class           ,  @klass.efgh.class
-    assert_equal Setting::DEFAULT     ,  @klass.ijkl
     @klass.abcd = @klass.efgh = @klass.ijkl = '14'
     assert_equal 14                   ,  @klass.abcd
     assert_equal 14.class             ,  @klass.abcd.class
