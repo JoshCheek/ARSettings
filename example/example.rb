@@ -1,60 +1,20 @@
-# db gets defined in the helper
-require File.expand_path( File.dirname(__FILE__) + "/../test/_in_memory_db" )
-require File.expand_path( File.dirname(__FILE__) + "/../lib/arsettings" )
+require File.dirname(__FILE__) + '/db'
+require File.dirname(__FILE__) + '/../lib/arsettings'
 
-# db starts off empty
-Setting.count               # => 0
+# tell it to create us a settings class named Settings
+ARSettings.create_settings_class 'Settings'
 
-# querying sets to default
-Setting::DEFAULT            # => false
-Setting[:max_resets]        # => false
-
-# set the value
-Setting[:max_resets] = 12
-Setting[:max_resets]        # => 12
-
-# indifferent access
-Setting[:max_resets]        # => 12
-Setting['max_resets']       # => 12
-
-# use custom default
-Setting[:welcome_message,"why hello thar!"] # => "why hello thar!"
-Setting[:welcome_message,"evening, gov'na"] # => "why hello thar!"
-
-# some classes to store in the db
-Example1 = Struct.new :a , :b
-Example2 = Class.new do 
-  attr_accessor :a , :b
-  def initialize(a,b) @a,@b=a,b end
-  def ==(ex2) @a==ex2.a&&@b==ex2.b end
+# ==========  For Use On An ActiveRecord Class  ==========
+class User < ActiveRecord::Base
+  has_setting(:site_admin) { |user| user.id }
+  has_setting :delete_acct_after , :default => 365   # days
 end
 
-# store any data type
-Setting[  :hash    ] = { :abc => 123 , 'def' => 456 }
-Setting[  :array   ] = [1,2,'3','4',/5/,/6/,:'7',:'8']
-Setting[  :fixnum  ] = 12
-Setting[  :bignum  ] = 111_222_333_444_555_666_777_888_999_000
-Setting[  :float   ] = 12.12
-Setting[  :symbol  ] = :sym
-Setting[  :string  ] = 'str'
-Setting[  :true    ] = true
-Setting[  :false   ] = false
-Setting[  :nil     ] = nil
-Setting[  :struct  ] = Example1.new(1,2)
-Setting[  :class   ] = Example2.new(1,2)
+User.create! :name => 'the admin' 
+# User.site_admin = User.first
+# User.site_admin # => 
 
-Setting[  :hash    ] # => {:abc=>123, "def"=>456}
-Setting[  :array   ] # => [1, 2, "3", "4", /5/, /6/, :"7", :"8"]
-Setting[  :fixnum  ] # => 12
-Setting[  :bignum  ] # => 111222333444555666777888999000
-Setting[  :float   ] # => 12.12
-Setting[  :symbol  ] # => :sym
-Setting[  :string  ] # => "str"
-Setting[  :true    ] # => true
-Setting[  :false   ] # => false
-Setting[  :nil     ] # => nil
-Setting[  :struct  ] # => #<struct Example1 a=1, b=2>
-Setting[  :class   ] # => #<Example2:0x000001009e6b40 @a=1, @b=2>
 
-# did they make it into the db?
-Setting.count # => 14
+User.site_admin         # => 
+User.site_admin = 100   
+# ~> -:26: syntax error, unexpected $end, expecting ')'

@@ -4,18 +4,12 @@ class SettingTest < Test::Unit::TestCase
       
   def setup
     Setting.reset_all
-    Setting.default = :the_default_value
   end
   
   verify 'can query whether a setting exists with setting?, and can declare settings with add' do
     assert !Setting.setting?(:a)
     Setting.add :a
     assert Setting.setting?(:a)
-  end
-  
-  verify 'defaults to Setting.default if no default is given' do
-    Setting.add :a
-    assert_equal :the_default_value , Setting.a
   end
   
   verify 'can add default when creating' do
@@ -43,7 +37,13 @@ class SettingTest < Test::Unit::TestCase
   
   verify 'does not raise error if the setting already exists' do
     assert_nothing_raised { Setting.add :a }
-    assert_nothing_raised { Setting.add :a }
+    assert_nothing_raised { 
+      # begin
+      Setting.add :a 
+    # rescue Exception
+    #   puts $@
+    # end
+      }
   end
   
   verify 'does not overwrite current value with default when added repeatedly' do
@@ -138,10 +138,37 @@ class SettingTest < Test::Unit::TestCase
     end
   end
   
-  verify 'add returns the value of the setting' do
-    assert_equal 100 , Setting.add( :a , :default => 100)
-    assert_equal 101 , Setting.package(String).add( :b , :default => 101)
-    assert_equal 101 , Setting.package(String).add( :b , :default => 102)
+  verify 'add returns the package' do
+    assert_equal Setting.package(Setting) , Setting.add( :a , :default => 100)
+    assert_equal Setting.package(String)  , Setting.package(String).add( :b , :default => 101)
+    assert_equal Setting.package(String)  , Setting.package(String).add( :b , :default => 102)
+  end
+  
+  
+  context 'new default handling' do
+    verify "if a default is passed, saves the default" do
+      seen = nil
+      Setting.add :hunted , :default => 5   do |val| seen = val end
+      assert_equal seen , 5
+      assert_equal 5, Setting.first.value
+      assert_equal 5, Setting.hunted
+    end
+    
+    verify "if no default is passed, waits for initial setting" do
+      seen = nil
+      Setting.add :down do |val| seen = val end
+      Setting.down = 6
+      assert_equal seen , 6
+      assert_equal 6, Setting.first.value      
+      assert_equal 6, Setting.down      
+    end
+    
+    verify "if no default is passed, raises an error if not initialized by first access" do
+      seen = nil
+      Setting.add :like do |val| seen = val end
+      assert_equal nil , seen
+      assert_raises(ARSettings::UninitializedSettingError) { Setting.like }
+    end
   end
   
 end

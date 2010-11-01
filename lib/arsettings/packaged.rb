@@ -59,7 +59,6 @@ module ARSettings
         instance.destroy
       end
       @settings = Hash.new
-      @default = settings_class::DEFAULT
     end
     
     def validate_name(name)
@@ -75,13 +74,13 @@ module ARSettings
       if setting? name
         @settings[name].volatile        =  options[:volatile]  if options.has_key? :volatile
         @settings[name].postprocessing  =  proc                if proc
-        send name
       else
         add_setter(name)
         add_getter(name)
         @settings[name] = settings_class.new :name => name.to_s , :postprocessing => proc || PASSTHROUGH , :volatile => !!options.fetch(:volatile,settings_class::VOLATILIE_DEFAULT) , :package => package
-        send "#{name}=" , options.fetch(:default,default)
+        send "#{name}=" , options[:default] if options.has_key?(:default)
       end
+      self
     end
 
     def setting?(name)
@@ -137,18 +136,6 @@ module ARSettings
     def settings_with_values
       @settings.map { |name,instance| [name,instance.value] }
     end
-
-    def default=(default)
-      @default = default
-    end
-
-    def default
-      if defined?(@default)
-        @default
-      else
-        settings_class::DEFAULT
-      end
-    end
     
   private
   
@@ -159,7 +146,6 @@ module ARSettings
       add_setter(name)
       add_getter(name)
       @settings[name] = record
-      return record.value
     end
     
   end
