@@ -28,10 +28,6 @@ module ARSettings
       end
     end
     
-    def default
-      package(self).default
-    end
-
   private
   
     def load_from_db
