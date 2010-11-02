@@ -11,10 +11,7 @@ module ARSettings
   # create the settings class
   def self.create_settings_class( classname , options=Hash.new )
     raise AlreadyDefinedError.new("you are trying to define the settings class #{classname}, but it already exists") if Object.constants.map { |c| c.to_s }.include?(classname.to_s)
-    valid_options = [:volatile,:max_chars]
-    options.each do |key,value|
-      raise ARSettings::InvalidOptionError.new("#{key.inspect} is not a valid option, because it is not in #{valid_options.inspect}") unless valid_options.include? key
-    end
+    validate_options options , :volatile , :max_chars
     Object.const_set classname , Class.new(ActiveRecord::Base)
     klass = Object.const_get(classname).class_eval do
       extend  SettingsClass_ClassMethods
@@ -36,10 +33,7 @@ module ARSettings
   def self.on( object , options = Hash.new )
     settings_class = options.fetch :settings_class , default_class
     raise NoDefaultPackageError.new("You did not specify a settings class, and no default is set (make sure you have already invoked create_settings_class)") unless settings_class
-    valid_options = [:settings_class]
-    options.each do |key,value|
-      raise ARSettings::InvalidOptionError.new("#{key.inspect} is not a valid option, because it is not in #{valid_options.inspect}") unless valid_options.include? key
-    end
+    validate_options options , :settings_class
     (class << object ; self ; end).send :define_method , :has_setting do |name,options={},&block|
       package = settings_class.package(object)
       package.add name , options , &block
@@ -60,6 +54,14 @@ module ARSettings
   
   def self.deserialize(data)
     YAML::load(data)
+  end
+  
+  def self.validate_options(options,*valid_options)
+    options.each do |option,value|
+      unless valid_options.include? option
+        raise ARSettings::InvalidOptionError.new "#{option.inspect} is not a valid option, because it is not in #{valid_options.inspect}"
+      end
+    end
   end
   
 end
