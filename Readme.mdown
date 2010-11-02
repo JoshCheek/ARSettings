@@ -21,7 +21,6 @@ Dependencies
 TODO
 ====
 
-* add AR::B the ability to specify whether it goes on the ivar or not (defaulting to not)
 * Gemify it maybe? :)
 * raise error if anything that takes options receives invalid option
 

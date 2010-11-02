@@ -4,6 +4,7 @@ module ARSettings
   NoSuchSettingError        = Class.new(Exception)
   InvalidNameError          = Class.new(Exception)
   InvalidPackageError       = Class.new(Exception)
+  InvalidOptionError        = Class.new(Exception)
   NoDefaultPackageError     = Class.new(Exception)
   UninitializedSettingError = Class.new(Exception)
   

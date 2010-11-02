@@ -96,6 +96,24 @@ class ActiveRecordIntegration < Test::Unit::TestCase
     assert_equal 15 , @klass.abcd
   end
   
+  verify "doesn't raise error for valid options" do
+    assert_nothing_raised do
+      @klass.class_eval do
+        has_setting :abcd , :instance => true , :volatile => true , :default => 5
+      end
+    end
+  end
+  
+  verify "does raise error if it receives any invalid options" do
+    [[:abcd,:settings_class,Setting],[:efgh,:package,String],[:ijkl,:lkjdsf,true],[:mnop,:abcd,true]].each do |meth,key,value|
+      assert_raises ARSettings::InvalidOptionError do
+        @klass.class_eval do
+          has_setting meth , key => value
+        end
+      end      
+    end
+  end
+  
 end
 
 
