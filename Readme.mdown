@@ -21,8 +21,9 @@ Dependencies
 TODO
 ====
 
-* Gemify it maybe? :)
-* raise error if anything that takes options receives invalid option
+* Write examples
+* Write documentation
+* Turn into gem
 
 ---------------------------------------
 
