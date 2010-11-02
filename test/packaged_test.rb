@@ -273,6 +273,25 @@ class TestPackaging < Test::Unit::TestCase
       assert_equal 2 , hash.abcd
     end
 
+    verify "doesn't raise error for valid options" do
+      assert_nothing_raised do
+        s.add :abcd , :default => 1 , :volatile => true ,  do end
+      end
+    end
+    
+    verify "does raise error if it receives any invalid options" do
+      [ [ :a  ,  :package         ,   String  ],
+        [ :b  ,  :settings_class  ,   Setting ],
+        [ :c  ,  :lkjdsf          ,   true    ],
+        [ :d  ,  :abcd            ,   true    ],
+        [ :e  ,  :instance        ,   true    ],
+      ].each do |meth,key,value|
+        assert_raises ARSettings::InvalidOptionError do
+          s.add meth , key => value
+        end      
+      end
+    end
+
   end
   
   

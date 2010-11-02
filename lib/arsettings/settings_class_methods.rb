@@ -12,7 +12,7 @@ module ARSettings
     def add( name , options={} , &proc )
       options = name if name.is_a? Hash
       if options[:package]
-        package options[:package]
+        package options.delete(:package)
       else
         package self
       end.add( name , options , &proc )

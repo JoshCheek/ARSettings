@@ -70,6 +70,7 @@ module ARSettings
     
     def add( name , options={} , &proc )
       return(add_from_instance name[:record]) if name.is_a? Hash # internal use only
+      ARSettings.validate_options options , :volatile , :default
       name = name.to_sym
       validate_name(name)
       if setting? name
