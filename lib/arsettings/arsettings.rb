@@ -34,9 +34,9 @@ module ARSettings
     settings_class = options.fetch :settings_class , default_class
     raise NoDefaultPackageError.new("You did not specify a settings class, and no default is set (make sure you have already invoked create_settings_class)") unless settings_class
     validate_options options , :settings_class
-    (class << object ; self ; end).send :define_method , :has_setting do |name,options={},&block|
+    (class << object ; self ; end).send :define_method , :has_setting do |name,inner_options={},&block|
       package = settings_class.package(object)
-      package.add name , options , &block
+      package.add name , inner_options , &block
       (class << self ; self ; end).instance_eval do
         getter = name
         setter = "#{name}="

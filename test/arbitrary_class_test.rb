@@ -100,14 +100,14 @@ class AddToArbitraryClass < Test::Unit::TestCase
     assert_equal 6 , C8.abcd
   end
   
-  verify "doesn't raise error for valid options" do
+  verify "ARSettings.on doesn't raise error for valid options" do
     class C9 ; end
     assert_nothing_raised do
       ARSettings.on C9 , :settings_class => Setting
     end
   end
   
-  verify "does raise error if it receives any invalid options" do
+  verify "ARSettings.on does raise error if it receives any invalid options" do
     [ [ (class C11;self;end)  ,  :package         ,   String  ],
       [ (class C12;self;end)  ,  :lkjdsf          ,   true    ],
       [ (class C13;self;end)  ,  :abcd            ,   true    ],
@@ -121,6 +121,26 @@ class AddToArbitraryClass < Test::Unit::TestCase
     end
   end
   
+  
+  verify "has_setting doesn't raise error for valid options" do
+    class C17 ; ARSettings.on self ; end
+    assert_nothing_raised do
+      C17.has_setting :abcd , :volatile => true , :default => 4
+    end
+  end
+  
+  verify "has_setting does raise error if it receives any invalid options" do
+    [ [ (class C18;ARSettings.on(self);self;end)  ,  :a  ,  :package         ,   String  ],
+      [ (class C19;ARSettings.on(self);self;end)  ,  :b  ,  :lkjdsf          ,   true    ],
+      [ (class C20;ARSettings.on(self);self;end)  ,  :c  ,  :abcd            ,   true    ],
+      [ (class C21;ARSettings.on(self);self;end)  ,  :d  ,  :instance        ,   true    ],
+      [ (class C24;ARSettings.on(self);self;end)  ,  :g  ,  :settings_class  ,   Setting ],
+    ].each do |klass,meth,key,value|
+      assert_raises ARSettings::InvalidOptionError do
+        klass.has_setting meth , key => value
+      end      
+    end
+  end
 end
 
     
