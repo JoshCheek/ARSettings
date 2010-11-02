@@ -11,6 +11,10 @@ module ARSettings
   # create the settings class
   def self.create_settings_class( classname , options=Hash.new )
     raise AlreadyDefinedError.new("you are trying to define the settings class #{classname}, but it already exists") if Object.constants.map { |c| c.to_s }.include?(classname.to_s)
+    valid_options = [:volatile,:max_chars]
+    options.each do |key,value|
+      raise ARSettings::InvalidOptionError.new("#{key.inspect} is not a valid option, because it is not in #{valid_options.inspect}") unless valid_options.include? key
+    end
     Object.const_set classname , Class.new(ActiveRecord::Base)
     klass = Object.const_get(classname).class_eval do
       extend  SettingsClass_ClassMethods

@@ -82,4 +82,25 @@ class InitializingSettingsClasses < Test::Unit::TestCase
       assert_equal Setting14s , ARSettings.default_class
     end
   end
+  
+  verify "doesn't raise error for valid options" do
+    assert_nothing_raised do
+      ARSettings.create_settings_class :Setting17s , :max_chars => 50 , :volatile => false
+    end
+  end
+  
+  verify "does raise error if it receives any invalid options" do
+    [ [ :Setting18s  ,  :package         ,   String  ],
+      [ :Setting19s  ,  :settings_class  ,   Setting ],
+      [ :Setting20s  ,  :lkjdsf          ,   true    ],
+      [ :Setting21s  ,  :abcd            ,   true    ],
+      [ :Setting22s  ,  :instance        ,   true    ],
+      [ :Setting24s  ,  :default         ,   true    ],
+    ].each do |klass,key,value|
+      assert_raises ARSettings::InvalidOptionError do
+        ARSettings.create_settings_class klass , key => value
+      end      
+    end
+  end
+  
 end
