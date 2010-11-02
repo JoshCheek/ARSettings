@@ -28,6 +28,7 @@ class AddToArbitraryClass < Test::Unit::TestCase
     make_class(:C2) { has_setting :abcd }
     C2.abcd = 5
     assert_equal 5 , C2.abcd
+    assert_equal true , C2.abcd?
   end
     
   verify 'can specify the desired settings class when adding to another class' do

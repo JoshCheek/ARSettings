@@ -37,8 +37,10 @@ module ARSettings
       (class << self ; self ; end).instance_eval do
         getter = name
         setter = "#{name}="
-        define_method getter do       package.send getter       end
-        define_method setter do |arg| package.send setter , arg end
+        boolean_getter = "#{name}?"
+        define_method getter          do       package.send getter          end
+        define_method setter          do |arg| package.send setter , arg    end
+        define_method boolean_getter  do       package.send boolean_getter  end
       end
     end
   end

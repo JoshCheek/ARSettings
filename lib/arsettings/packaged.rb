@@ -56,6 +56,7 @@ module ARSettings
       (@settings||{}).each do |name,instance| 
         remove_setter(name)
         remove_getter(name)
+        remove_boolean_getter(name)
         instance.destroy
       end
       @settings = Hash.new
@@ -77,6 +78,7 @@ module ARSettings
       else
         add_setter(name)
         add_getter(name)
+        add_boolean_getter(name)
         @settings[name] = settings_class.new :name => name.to_s , :postprocessing => proc || PASSTHROUGH , :volatile => !!options.fetch(:volatile,settings_class::VOLATILIE_DEFAULT) , :package => package
         send "#{name}=" , options[:default] if options.has_key?(:default)
       end
@@ -111,12 +113,20 @@ module ARSettings
       define_method(name) { @settings[name].value }
     end
     
+    def add_boolean_getter(name)
+      define_method("#{name}?") { !!@settings[name].value }
+    end
+    
     def remove_setter(name)
       metaclass.send :remove_method , "#{name}="
     end
     
     def remove_getter(name)
       metaclass.send :remove_method , name
+    end
+    
+    def remove_boolean_getter(name)
+      metaclass.send :remove_method , "#{name}?"
     end
     
     def method_missing(name,*args)
@@ -145,6 +155,7 @@ module ARSettings
       validate_name(name)
       add_setter(name)
       add_getter(name)
+      add_boolean_getter(name)
       @settings[name] = record
     end
     

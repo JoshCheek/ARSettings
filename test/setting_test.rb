@@ -171,6 +171,25 @@ class SettingTest < Test::Unit::TestCase
     end
   end
   
+  verify 'it adds ? methods' do
+    Setting.add :ten , :default => 3
+    assert_equal TrueClass , Setting.ten?.class
+    assert_equal 3 , Setting.ten
+  end
+  
+  verify 'it raises error if accessing uninitialized boolean' do
+    Setting.add :cent
+    assert_raises(ARSettings::UninitializedSettingError) { Setting.cent? }
+  end
+  
+  verify 'resetting removes teh boolean getter' do
+    Setting.add :blues
+    Setting.blues = 5
+    assert_equal true , Setting.blues?
+    Setting.reset_all
+    assert_raises(ARSettings::NoSuchSettingError) { Setting.blues? }
+  end
+  
 end
 
 

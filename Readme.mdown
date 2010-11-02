@@ -21,8 +21,6 @@ Dependencies
 TODO
 ====
 
-* when creating a new setting, don't have a default value. instead, just wait to save it until it gets set for the first time
-* add boolean awareness
 * add AR::B the ability to specify whether it goes on the ivar or not (defaulting to not)
 * Gemify it maybe? :)
 * raise error if anything that takes options receives invalid option
