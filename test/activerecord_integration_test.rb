@@ -15,8 +15,14 @@ class ActiveRecordIntegration < Test::Unit::TestCase
   end
   
   verify 'can specify that a setting should be able to be looked up from the instance' do
-    @klass.class_eval { has_setting :abcd , :default => 4 }
-    assert_equal 4 , @klass.new.abcd
+    @klass.class_eval do 
+      has_setting :abcd , :default => 4
+      has_setting :efgh , :default => 5 , :instance => true
+    end
+    assert_raises(NoMethodError) { @klass.new.abcd  }
+    assert_raises(NoMethodError) { @klass.new.abcd? }
+    assert_nothing_raised        { @klass.new.efgh  }
+    assert_nothing_raised        { @klass.new.efgh? }
   end
 
   verify 'settings are loaded from the db, if they exist in the db' do
