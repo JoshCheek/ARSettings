@@ -32,6 +32,10 @@ module ARSettings
   def self.on( object , options = Hash.new )
     settings_class = options.fetch :settings_class , default_class
     raise NoDefaultPackageError.new("You did not specify a settings class, and no default is set (make sure you have already invoked create_settings_class)") unless settings_class
+    valid_options = [:settings_class]
+    options.each do |key,value|
+      raise ARSettings::InvalidOptionError.new("#{key.inspect} is not a valid option, because it is not in #{valid_options.inspect}") unless valid_options.include? key
+    end
     (class << object ; self ; end).send :define_method , :has_setting do |name,options={},&block|
       package = settings_class.package(object)
       package.add name , options , &block

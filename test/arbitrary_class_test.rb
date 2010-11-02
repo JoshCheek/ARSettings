@@ -99,6 +99,28 @@ class AddToArbitraryClass < Test::Unit::TestCase
     assert_equal 5 , C7.abcd
     assert_equal 6 , C8.abcd
   end
+  
+  verify "doesn't raise error for valid options" do
+    class C9 ; end
+    assert_nothing_raised do
+      ARSettings.on C9 , :settings_class => Setting
+    end
+  end
+  
+  verify "does raise error if it receives any invalid options" do
+    [ [ (class C11;self;end)  ,  :package         ,   String  ],
+      [ (class C12;self;end)  ,  :lkjdsf          ,   true    ],
+      [ (class C13;self;end)  ,  :abcd            ,   true    ],
+      [ (class C14;self;end)  ,  :instance        ,   true    ],
+      [ (class C15;self;end)  ,  :volatile        ,   true    ],
+      [ (class C16;self;end)  ,  :default         ,   true    ],
+    ].each do |klass,key,value|
+      assert_raises ARSettings::InvalidOptionError do
+        ARSettings.on klass , key => value
+      end      
+    end
+  end
+  
 end
 
     
