@@ -100,6 +100,17 @@ class AddToArbitraryClass < Test::Unit::TestCase
     assert_equal 6 , C8.abcd
   end
   
+  verify 'can specify that a setting should be able to be looked up from the instance' do
+    make_class :C25 do
+      has_setting :abcd , :default => 4
+      has_setting :efgh , :default => 5 , :instance => true
+    end
+    assert_raises(NoMethodError) { C25.new.abcd  }
+    assert_raises(NoMethodError) { C25.new.abcd? }
+    assert_nothing_raised        { C25.new.efgh  }
+    assert_nothing_raised        { C25.new.efgh? }
+  end
+  
   verify "ARSettings.on doesn't raise error for valid options" do
     class C9 ; end
     assert_nothing_raised do
@@ -125,7 +136,7 @@ class AddToArbitraryClass < Test::Unit::TestCase
   verify "has_setting doesn't raise error for valid options" do
     class C17 ; ARSettings.on self ; end
     assert_nothing_raised do
-      C17.has_setting :abcd , :volatile => true , :default => 4
+      C17.has_setting :abcd , :volatile => true , :default => 4 , :instance => true
     end
   end
   
@@ -133,7 +144,6 @@ class AddToArbitraryClass < Test::Unit::TestCase
     [ [ (class C18;ARSettings.on(self);self;end)  ,  :a  ,  :package         ,   String  ],
       [ (class C19;ARSettings.on(self);self;end)  ,  :b  ,  :lkjdsf          ,   true    ],
       [ (class C20;ARSettings.on(self);self;end)  ,  :c  ,  :abcd            ,   true    ],
-      [ (class C21;ARSettings.on(self);self;end)  ,  :d  ,  :instance        ,   true    ],
       [ (class C24;ARSettings.on(self);self;end)  ,  :g  ,  :settings_class  ,   Setting ],
     ].each do |klass,meth,key,value|
       assert_raises ARSettings::InvalidOptionError do

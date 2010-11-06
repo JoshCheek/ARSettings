@@ -35,15 +35,21 @@ module ARSettings
     raise NoDefaultPackageError.new("You did not specify a settings class, and no default is set (make sure you have already invoked create_settings_class)") unless settings_class
     validate_options options , :settings_class
     (class << object ; self ; end).send :define_method , :has_setting do |name,inner_options={},&block|
+      instance = inner_options.delete :instance
       package = settings_class.package(object)
       package.add name , inner_options , &block
+      getter = name
+      setter = "#{name}="
+      boolean_getter = "#{name}?"
       (class << self ; self ; end).instance_eval do
-        getter = name
-        setter = "#{name}="
-        boolean_getter = "#{name}?"
         define_method getter          do       package.send getter          end
         define_method setter          do |arg| package.send setter , arg    end
         define_method boolean_getter  do       package.send boolean_getter  end
+      end
+      if instance
+        define_method getter          do       package.send getter          end
+        define_method boolean_getter  do       package.send boolean_getter  end
+        define_method setter          do |arg| package.send setter , arg    end
       end
     end
   end
