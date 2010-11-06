@@ -18,7 +18,7 @@ module ARSettings
       if @value_is_deserialized && !volatile?
         @deserialized_value
       else
-        raise UninitializedSettingError.new unless super
+        raise UninitializedSettingError.new("#{package}##{name} has not been initialized.") unless super
         reload
         @value_is_deserialized = true
         @deserialized_value = ARSettings.deserialize(super)
