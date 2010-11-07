@@ -18,9 +18,11 @@ Dependencies
 
 ---------------------------------------
 
-**This code is unmaintained.** 
+If you discover any errors / bugs, please inform me, and I will fix them and push out a new version.
 
-_If you do something interesting with it, let me know so I can be happy._
+If you wish to fix it yourself, fork it, fix it, and send me a pull request.
+
+If you think it would fit your use better if it did ______ or if the interface would be a lot nicer given _______ then let me know so I can consider that and make the gem better.
 
 ---------------------------------------
 
