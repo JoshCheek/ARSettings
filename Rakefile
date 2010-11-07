@@ -19,5 +19,5 @@ end
 
 desc 'generate docs'
 task :doc do
-  system "rdoc #{File.dirname(__FILE__)}/lib"
+  system "rdoc --force-update --format=darkfish --main=lib/arsettings.rb --title=ARSettings --main=arsettings.rb #{File.dirname(__FILE__)}/lib"
 end
