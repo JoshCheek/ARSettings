@@ -8,6 +8,12 @@ Usage
 
 Create a table to store your settings ([see example](https://github.com/JoshCheek/ARSettings/blob/master/example/helper.rb)), and then declare your settings as you like ([see examples](https://github.com/JoshCheek/ARSettings/blob/master/example/example.rb)).
 
+Installation
+============
+
+    gem install arsettings
+
+
 Dependencies
 ============
 
