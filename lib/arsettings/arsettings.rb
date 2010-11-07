@@ -34,7 +34,7 @@ module ARSettings
     settings_class = options.fetch :settings_class , default_class
     raise NoDefaultPackageError.new("You did not specify a settings class, and no default is set (make sure you have already invoked create_settings_class)") unless settings_class
     validate_options options , :settings_class
-    (class << object ; self ; end).send :define_method , :has_setting do |name,inner_options={},&block|
+    (class << object ; self ; end).send :define_method , :has_setting do |name,inner_options={},&block|  # :nodoc:
       instance = inner_options.delete :instance
       package = settings_class.package(object)
       package.add name , inner_options , &block
@@ -54,15 +54,15 @@ module ARSettings
     end
   end
   
-  def self.serialize(data)
+  def self.serialize(data) # :nodoc:
     YAML::dump(data)
   end
   
-  def self.deserialize(data)
+  def self.deserialize(data) # :nodoc:
     YAML::load(data)
   end
   
-  def self.validate_options(options,*valid_options)
+  def self.validate_options(options,*valid_options) # :nodoc:
     options.each do |option,value|
       unless valid_options.include? option
         raise ARSettings::InvalidOptionError.new "#{option.inspect} is not a valid option, because it is not in #{valid_options.inspect}"

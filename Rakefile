@@ -1,10 +1,12 @@
 task :default => :test
 
+
 desc 'run the unit tests'
 task :test do
   query = File.dirname(__FILE__) << '/test/*_test.rb'
   Dir[query].each { |filename| require filename }
 end
+
 
 desc 'irb session with env loaded'
 task :console do
@@ -13,6 +15,7 @@ task :console do
   requirements << "-r #{dir}/test/_helper.rb"
   system "irb -f #{requirements}"
 end
+
 
 require "rubygems"
 require "rake/gempackagetask"
@@ -89,3 +92,8 @@ desc 'Clear out RDoc and generated packages'
 task :clean => [:clobber_rdoc, :clobber_package] do
   rm "#{spec.name}.gemspec"
 end
+
+# desc 'generate docs'
+# task :doc do
+#   system "rdoc --force-update --format=darkfish --main=lib/arsettings.rb --title=ARSettings --main=arsettings.rb #{File.dirname(__FILE__)}/lib"
+# end
