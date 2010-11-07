@@ -1,6 +1,6 @@
 module ARSettings
     
-  module SettingsClass_InstanceMethods
+  module SettingsClass_InstanceMethods # :nodoc: all
 
     # unfortunately, can't serialize a proc. I tried both yaml and marshal
     # so will have to keep it in memory and just be sure to set it each time app loads
