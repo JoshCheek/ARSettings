@@ -1,3 +1,9 @@
+require "rubygems"
+require "rake/gempackagetask"
+require "rake/rdoctask"
+# require "rake/testtask"
+
+
 task :default => :test
 
 
@@ -15,19 +21,6 @@ task :console do
   requirements << "-r #{dir}/test/_helper.rb"
   system "irb -f #{requirements}"
 end
-
-
-require "rubygems"
-require "rake/gempackagetask"
-require "rake/rdoctask"
-
-require "rake/testtask"
-Rake::TestTask.new do |t|
-  t.libs << "test"
-  t.test_files = FileList["test/**/*_test.rb"]
-  t.verbose = true
-end
-
 
 
 # This builds the actual gem. For details of what all these options
