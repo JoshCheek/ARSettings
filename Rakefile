@@ -7,11 +7,25 @@ require "rake/rdoctask"
 task :default => :test
 
 
-desc 'run the unit tests'
-task :test do
-  query = File.dirname(__FILE__) << '/test/*_test.rb'
-  Dir[query].each { |filename| require filename }
+namespace :test do
+  desc 'create the gemsets'
+  task :make_gemsets do
+    sh File.dirname(__FILE__) << "/test/_make_gemsets.sh"
+  end
+  
+  desc 'run the tests on current ruby/gemspec'
+  task :crnt do
+    require File.dirname(__FILE__) << "/test/_run_one"
+  end
+  
+  desc 'run the tests on the supported rubies and gemsets'
+  task :all do
+    sh File.dirname(__FILE__) << "/test/_run_all.sh"
+  end
 end
+
+desc 'synonym for test:crnt'
+task :test => 'test:crnt'
 
 
 desc 'irb session with env loaded'
