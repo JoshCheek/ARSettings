@@ -32,7 +32,7 @@ module ARSettings
     
     def self.validate_settings_class(settings_class) # :nodoc:
       raise InvalidSettingsClassError.new("#{settings_class.inspect} should be a class created by the create_settings_class method") unless 
-          Class === settings_class && settings_class.superclass == ActiveRecord::Base && SettingsClass_ClassMethods === settings_class
+          Class === settings_class && settings_class.superclass == ActiveRecord::Base && SettingsClass::ClassMethods === settings_class
     end
    
    

@@ -2,8 +2,8 @@ require 'yaml'
 
 manifest = %w(
   arsettings
-  settings_class_methods
-  settings_instance_methods
+  settings_class/class_methods
+  settings_class/instance_methods
   packaged
   activerecord
   has_settings

@@ -14,8 +14,8 @@ module ARSettings
     validate_options options , :volatile , :max_chars
     Object.const_set classname , Class.new(ActiveRecord::Base)
     klass = Object.const_get(classname).class_eval do
-      extend  SettingsClass_ClassMethods
-      include SettingsClass_InstanceMethods
+      extend  SettingsClass::ClassMethods
+      include SettingsClass::InstanceMethods
       const_set :MAX_CHARS           , options.fetch( :max_chars , 30    )
       const_set :VOLATILIE_DEFAULT   , options.fetch( :volatile  , false )
       send :load_from_db
