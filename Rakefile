@@ -46,7 +46,7 @@ spec = Gem::Specification.new do |s|
 
   # Change these as appropriate
   s.name              = "arsettings"
-  s.version           = "1.0.1"
+  s.version           = "1.1.0"
   s.author            = "Joshua Cheek"
   s.email             = "josh.cheek@gmail.com"
   s.homepage          = "https://github.com/JoshCheek/ARSettings"
