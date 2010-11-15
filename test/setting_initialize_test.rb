@@ -103,4 +103,11 @@ class InitializingSettingsClasses < Test::Unit::TestCase
     end
   end
   
+  verify 'create should be an alias for create_settings_class' do
+    ARSettings.create :Setting25s
+    Setting25s.add :howdy , :default => 0
+    assert_equal 0 , Setting25s.howdy
+    assert_equal 1 , Setting25s.count
+  end
+  
 end

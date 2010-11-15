@@ -9,7 +9,7 @@ module ARSettings
   UninitializedSettingError = Class.new(Exception)
   
   # create the settings class
-  def self.create_settings_class( classname , options=Hash.new )
+  def self.create( classname , options=Hash.new )
     raise AlreadyDefinedError.new("you are trying to define the settings class #{classname}, but it already exists") if Object.constants.map { |c| c.to_s }.include?(classname.to_s)
     validate_options options , :volatile , :max_chars
     Object.const_set classname , Class.new(ActiveRecord::Base)
@@ -25,7 +25,14 @@ module ARSettings
     klass
   end
   
+  
+  
   class << self
+    # initially called create_settings_class, this is for backwards compatibility
+    alias :create_settings_class :create
+    
+    # the class that will be used when you inherit from AR::B,
+    # or if you don't specify in ::on
     attr_accessor :default_class
   end
   
