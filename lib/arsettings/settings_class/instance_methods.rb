@@ -15,6 +15,7 @@ module InstanceMethods # :nodoc: all
   end
   
   def value
+    @value_is_deserialized ||= false # just to clear a stupid warning
     if @value_is_deserialized && !volatile?
       @deserialized_value
     else
