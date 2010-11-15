@@ -3,6 +3,10 @@ Description
 
 ActiveRecord has a lot of support for tables of similar values. But what about those one time only values, like site settings? This is what ARSettings is intended for. One line to add settings to your ActiveRecord classes. Two to non-ActiveRecord classes. And you can have settings that are not defined on any class as well.
 
+Tested on Ruby versions 1.8.6, 1.8.7, 1.9.2
+Tested against ActiveRecord versions 2.3.3, 2.3.5, 2.3.8 and 3.0.1
+If you would like me to test against a specific version not on here, let me know.
+
 Usage
 =====
 
@@ -17,8 +21,7 @@ Installation
 Dependencies
 ============
 
-* Ruby 1.9
-* [ActiveRecord](http://rubygems.org/gems/activerecord) Tested on versions 2.3.8 and 3.0.1
+* [ActiveRecord](http://rubygems.org/gems/activerecord)
 
 Bugs / Contribution
 ===================
