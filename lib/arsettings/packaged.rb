@@ -17,7 +17,7 @@ module ARSettings
     end
     
     def self.has_instance?(settings_class,package) # :nodoc:
-      @instances && @instances[settings_class] && @instances[settings_class][normalize package]
+      @instances && @instances[settings_class] && @instances[settings_class][normalize(package)]
     end
     
     def self.validate(settings_class,package) # :nodoc:

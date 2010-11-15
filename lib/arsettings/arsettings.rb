@@ -49,7 +49,7 @@ module ARSettings
   def self.validate_options(options,*valid_options) # :nodoc:
     options.each do |option,value|
       unless valid_options.include? option
-        raise ARSettings::InvalidOptionError.new "#{option.inspect} is not a valid option, because it is not in #{valid_options.inspect}"
+        raise ARSettings::InvalidOptionError.new("#{option.inspect} is not a valid option, because it is not in #{valid_options.inspect}")
       end
     end
   end
