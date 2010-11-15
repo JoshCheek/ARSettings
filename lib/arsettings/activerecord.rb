@@ -1,12 +1,12 @@
 class ActiveRecord::Base
   
-  old_inherited = method :inherited
+  def self.inherited_with_settings(subclass)
+    inherited_without_settings subclass
+    subclass.extend ARSettings::HasSettings
+  end
   
-  (class << self ; self ; end).instance_eval do
-    define_method :inherited do |subclass|
-      old_inherited.call subclass
-      subclass.extend ARSettings::HasSettings
-    end
+  class << self
+    alias_method_chain :inherited, :settings
   end
   
 end
