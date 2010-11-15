@@ -9,7 +9,7 @@ class ActiveRecordIntegration < Test::Unit::TestCase
     @klass = Object.const_get "Model#{@@class_numbers.shift}"
   end
   
-  verify 'can add settings to any AR::B class with has_settings' do
+  verify 'can add settings to any AR::B class with has_setting' do
     @klass.class_eval { has_setting :abcd , :default => 5 }
     assert_equal 5 , @klass.abcd
   end
