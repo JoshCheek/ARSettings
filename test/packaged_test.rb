@@ -275,7 +275,7 @@ class TestPackaging < Test::Unit::TestCase
 
     verify "doesn't raise error for valid options" do
       assert_nothing_raised do
-        s.add :abcd , :default => 1 , :volatile => true ,  do end
+        s.add :abcd , :default => 1 , :volatile => true do end
       end
     end
     
