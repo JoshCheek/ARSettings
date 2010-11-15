@@ -58,7 +58,7 @@ spec = Gem::Specification.new do |s|
   s.rdoc_options      = %w(--main Readme.mdown)
 
   # Add any extra files to include in the gem
-  s.files             = %w(Rakefile Readme.mdown) + Dir.glob("{example/**/*,test/**/*,lib/**/*}")
+  s.files             = %w(Rakefile Readme.mdown) + Dir.glob("{examples/**/*,test/**/*,lib/**/*}")
   s.require_paths     = ["lib"]
 
   # If you want to depend on other gems, add them here, along with any

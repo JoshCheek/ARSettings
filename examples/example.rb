@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/helper'
+require File.dirname(__FILE__) + '/helper' # !> method redefined; discarding old warn
 require File.dirname(__FILE__) + '/../lib/arsettings'
 
 # tell it to create us a settings class named Settings
@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   has_setting :delete_account_after , :instance => true , :default => 365   # days
 end
 
-User.create! :name => 'the admin' 
+User.create! :name => 'the admin'
 User.site_admin = User.first
 User.site_admin                 # => "the admin"
 User.new.delete_account_after   # => 365
@@ -26,7 +26,7 @@ class Water
   has_setting :state    , :default => :liquid , :instance => true
 end
 
-Water.hydrogen # => 1
+Water.hydrogen # => 1 # !> loading in progress, circular require considered harmful - /Users/josh/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/rubygems.rb
 Water.oxygen   # => 2
 Water.new.state # => :liquid
 

@@ -10,7 +10,7 @@ If you would like me to test against a specific version not on here, let me know
 Usage
 =====
 
-Create a table to store your settings ([see example](https://github.com/JoshCheek/ARSettings/blob/master/example/helper.rb)), and then declare your settings as you like ([see examples](https://github.com/JoshCheek/ARSettings/blob/master/example/example.rb)).
+Create a table to store your settings ([see example](https://github.com/JoshCheek/ARSettings/blob/master/examples/helper.rb)), and then declare your settings as you like ([see examples](https://github.com/JoshCheek/ARSettings/blob/master/examples/example.rb)).
 
 Installation
 ============
