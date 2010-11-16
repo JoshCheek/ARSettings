@@ -9,7 +9,7 @@ ARSettings.create_settings_class 'Settings'
 # you can package settings together under a namespace
 EmailSettings = Settings.package :email
 
-# you can add settings with has_setting for consistency with other places that can have settings
+# you can add settings with has_setting for consistency across uses
 # or you can use add for brevity
 Settings.add :enabled
 EmailSettings.has_setting :enabled
