@@ -11,7 +11,7 @@ module ARSettings
         define_method "#{name}="  do |arg| package.send "#{name}=" , arg  end # setter
         define_method "#{name}?"  do       package.send "#{name}?"        end # boolean-getter
       end
-      (class << self ; self ; end).instance_eval &definitions
+      (class << self ; self ; end).instance_eval(&definitions)
       definitions.call if instance
     end
     
