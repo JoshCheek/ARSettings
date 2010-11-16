@@ -10,7 +10,7 @@ If you would like me to test against a specific version not on here, let me know
 Usage
 =====
 
-First you need to create a table to store your settings, (this will probably go in a migration, though the only requirement is that the schema is correct) ([see example](https://github.com/JoshCheek/ARSettings/blob/master/examples/helper.rb))
+First you need to create a table to store your settings, this will probably go in a migration, though the only requirement is that the schema is correct ([see example](https://github.com/JoshCheek/ARSettings/blob/master/examples/helper.rb))
 
 * Use the settings class to store settings ([see example](https://github.com/JoshCheek/ARSettings/blob/master/examples/generic_settings.rb))
 * Package settings together under a single namespace ([see example](https://github.com/JoshCheek/ARSettings/blob/master/examples/namespaced.rb))
