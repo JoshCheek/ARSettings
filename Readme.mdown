@@ -10,7 +10,13 @@ If you would like me to test against a specific version not on here, let me know
 Usage
 =====
 
-Create a table to store your settings ([see example](https://github.com/JoshCheek/ARSettings/blob/master/examples/helper.rb)), and then declare your settings as you like ([see examples](https://github.com/JoshCheek/ARSettings/blob/master/examples/example.rb)).
+First you need to create a table to store your settings, (this will probably go in a migration, though the only requirement is that the schema is correct) ([see example](https://github.com/JoshCheek/ARSettings/blob/master/examples/helper.rb))
+
+* Use the settings class to store settings ([see example](https://github.com/JoshCheek/ARSettings/blob/master/examples/generic_settings.rb))
+* Package settings together under a single namespace ([see example](https://github.com/JoshCheek/ARSettings/blob/master/examples/namespaced.rb))
+* Add settings directly to your ActiveRecord class and its instances ([see example](https://github.com/JoshCheek/ARSettings/blob/master/examples/on_activerecord_class.rb))
+* Add settings to any class you like ([see example](https://github.com/JoshCheek/ARSettings/blob/master/examples/on_any_class.rb))
+
 
 Installation
 ============
