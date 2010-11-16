@@ -18,9 +18,19 @@ namespace :test do
     require File.dirname(__FILE__) << "/test/_run_one"
   end
   
+  desc 'check that all code is covered'
+  task :rcov do
+    sh File.dirname(__FILE__) << "/test/_rcov.sh"
+  end
+  
   desc 'run the tests on the supported rubies and gemsets'
   task :all do
     sh File.dirname(__FILE__) << "/test/_run_all.sh"
+  end
+  
+  desc 'checks for code smells -- assumes you have reek installed'
+  task :reek do
+    sh File.dirname(__FILE__) << "/test/_reek.sh"
   end
 end
 
