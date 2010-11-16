@@ -6,14 +6,14 @@ require File.dirname(__FILE__) + '/../lib/arsettings'
 ARSettings.create_settings_class 'Settings'
 
 # add and change a setting
-Settings.add :domain , :default => 'localhost:3000'
+Settings.has_setting :domain , :default => 'localhost:3000'
 Settings.domain                       # => "localhost:3000"
 Settings.domain = 'localhost:9292'
 Settings.domain                       # => "localhost:9292"
 
 
 # what if the value is never initialized? (ie first use with no default)
-Settings.add :port
+Settings.has_setting :port
 begin 
   Settings.port
 rescue ARSettings::UninitializedSettingError
