@@ -66,10 +66,17 @@ class TestPackaging < Test::Unit::TestCase
   
     s = Setting.package(String)
   
-    verify 'can query whether a setting exists with setting?, and can declare settings with add' do
+    verify 'can query whether a setting exists with setting?, and can declare settings with add, or has_setting' do
       assert !s.setting?(:a)
+      assert !s.setting?(:b)
       s.add :a
+      s.add :b
       assert s.setting?(:a)
+      assert s.setting?(:b)
+    end
+    
+    verify 'has_setting is an alias for add' do
+      assert_equal s.method(:add) , s.method(:has_setting)
     end
     
     verify "add returns the package the setting was added to" do

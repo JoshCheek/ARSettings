@@ -70,6 +70,8 @@ module ARSettings
       end
       self
     end
+    
+    alias :has_setting :add
 
     def setting?(name)
       @settings.has_key? name

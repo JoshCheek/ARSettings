@@ -32,6 +32,8 @@ module ClassMethods
       package self
     end.add( name , options , &proc )
   end
+  
+  alias :has_setting :add
  
   private
 

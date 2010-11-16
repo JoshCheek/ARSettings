@@ -6,10 +6,18 @@ class SettingTest < Test::Unit::TestCase
     Setting.reset_all
   end
   
-  verify 'can query whether a setting exists with setting?, and can declare settings with add' do
+  verify 'can query whether a setting exists with setting?, and can declare settings with add, or has_setting' do
     assert !Setting.setting?(:a)
+    assert !Setting.setting?(:b)
     Setting.add :a
+    Setting.has_setting :b
     assert Setting.setting?(:a)
+    assert Setting.setting?(:b)
+  end
+  
+  verify 'has_setting is an alias for add' do
+    # the later versions can verify that it is correct, but comment it out so early versions don't fail
+    assert_equal Setting.method(:add) , Setting.method(:has_setting) unless RUBY_VERSION < '1.9.1'
   end
   
   verify 'can add default when creating' do
