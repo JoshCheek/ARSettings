@@ -144,10 +144,11 @@ module ARSettings
     end
   
     def method_missing(name,*args) # :nodoc:
-      if name.to_s =~ /\A[A-Z]/
+      name_to_s = name.to_s
+      if name_to_s =~ /\A[A-Z]/
         settings_class.const_get name , *args
-      elsif name.to_s !~ /=$/ || ( name.to_s =~ /=$/ && args.size == 1 )
-        raise ARSettings::NoSuchSettingError.new("There is no setting named #{name.to_s.chomp '='}")
+      elsif name_to_s !~ /=$/ || ( name_to_s =~ /=$/ && args.size == 1 )
+        raise ARSettings::NoSuchSettingError.new("There is no setting named #{name_to_s.chomp '='}")
       else
         super
       end
