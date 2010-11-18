@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../lib/arsettings'
 
 # tell it to create us a settings class named Settings
 # this means you must have a table in your db named 'settings'
-ARSettings.create_settings_class 'Settings'
+ARSettings.create 'Settings'
 
 
 # you can package settings together under a namespace
