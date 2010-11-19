@@ -114,7 +114,7 @@ module ARSettings
     end
   
     def remove_method(name) # :nodoc:
-      metaclass.send :remove_method , "#{setting}="
+      metaclass.send :remove_method , name
     end
 
     def add_setter(name) # :nodoc:
@@ -132,15 +132,15 @@ module ARSettings
     end
 
     def remove_setter(name) # :nodoc:
-      metaclass.send :remove_method , "#{name}="
+      remove_method "#{name}="
     end
   
     def remove_getter(name) # :nodoc:
-      metaclass.send :remove_method , name
+      remove_method name
     end
   
     def remove_boolean_getter(name) # :nodoc:
-      metaclass.send :remove_method , "#{name}?"
+      remove_method "#{name}?"
     end
   
     def method_missing(name,*args) # :nodoc:
